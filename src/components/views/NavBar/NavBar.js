@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Nav } from "react-bootstrap";
+import { FaDropbox } from "react-icons/fa";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -14,7 +15,7 @@ const NavBar = () => {
       fontWeight: "normal",
     },
     section: {
-      padding: "20px 20px",
+      padding: "20px 10px",
       borderBottom: "1px solid #e1e1e1",
     },
     link: {
@@ -23,7 +24,7 @@ const NavBar = () => {
       display: "flex",
       alignItems: "center",
       cursor: "pointer",
-      justifyContent: "flex-start", // Ensures content is aligned at the start of the flex container
+      justifyContent: "flex-start",
     },
     title: {
       fontWeight: "bolder",
@@ -33,9 +34,9 @@ const NavBar = () => {
     subtitle: {
       fontWeight: "bold",
       fontSize: "18px",
-      display: "flex", // Ensures the text and icon are in a flexbox layout
-      alignItems: "center", // Vertically centers the text and icon
-      width: "100%", // Ensures the container takes full width for proper alignment
+      display: "flex",
+      alignItems: "center",
+      width: "100%",
     },
     subItem: {
       padding: "15px 25px",
@@ -50,7 +51,7 @@ const NavBar = () => {
       transform: "rotate(180deg)",
     },
     teamSpaceGap: {
-      marginTop: "20px", // Adjust this value to increase the gap
+      marginTop: "20px",
     },
   };
 
@@ -69,6 +70,8 @@ const NavBar = () => {
             backgroundColor: styles.navStyle.backgroundColor,
           }}
         >
+          <FaDropbox style={{ marginRight: "10px" }} />{" "}
+          {/* Include Dropbox icon */}
           KHUropbox
         </Nav.Link>
       </div>
