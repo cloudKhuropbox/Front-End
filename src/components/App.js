@@ -3,20 +3,27 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import NavBar from "./views/NavBar/NavBar";
 import MainPage from "./views/MainPage/MainPage";
+import Header from "./views/Header/Header";
 
 function App() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div style={{ display: "flex", height: "100vh" }}>
-        {" "}
-        {/* Set display to flex to align items side by side */}
+      <div style={{ display: "flex", flex: 1 }}>
         <NavBar />
-        <div style={{ flex: 1, padding: "69px 20px 20px" }}>
-          {" "}
-          {/* Flexible space for MainPage, adjusted padding */}
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-          </Routes>
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+            height: "100vh",
+          }}
+        >
+          <Header />
+          <div style={{ flex: 1, padding: "69px 20px 20px" }}>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+            </Routes>
+          </div>
         </div>
       </div>
     </Suspense>
