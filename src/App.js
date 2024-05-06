@@ -1,11 +1,7 @@
-import './App.css';
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-     khuropbox
-    </div>
-  );
+  return <div className="App">Main Page</div>;
 }
 
 export default App;
