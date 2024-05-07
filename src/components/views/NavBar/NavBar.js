@@ -7,7 +7,7 @@ const NavBar = () => {
 
   const styles = {
     navStyle: {
-      backgroundColor: "#f8f9fa",
+      backgroundColor: "#f7f5f2",
       height: "100vh",
       width: "250px",
       fontFamily: "Arial, sans-serif",

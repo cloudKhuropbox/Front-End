@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar>
       <Container fluid>
         <Form className="d-flex flex-grow-1 mx-2">
           <FormControl
@@ -41,12 +41,12 @@ const Header = () => {
           to="/create-team"
           className="btn me-2"
           style={{
-            backgroundColor: "#fffbe6", // very pale yellow
+            backgroundColor: "#f7f5f2",
             color: "black",
-            fontWeight: "normal", // regular font weight
-            fontSize: "12px", // smaller text size
-            padding: "6px 10px", // slightly smaller button size
-            border: "none", // remove border
+            fontWeight: "normal",
+            fontSize: "12px",
+            padding: "6px 10px",
+            border: "none",
           }}
         >
           <FaUserPlus style={{ marginRight: "5px", fontSize: "16px" }} /> 팀원
@@ -56,12 +56,12 @@ const Header = () => {
           to="/upload"
           className="btn me-2"
           style={{
-            backgroundColor: "#fffbe6", // very pale yellow
+            backgroundColor: "#f7f5f2",
             color: "black",
-            fontWeight: "normal", // regular font weight
-            fontSize: "12px", // smaller text size
-            padding: "6px 10px", // slightly smaller button size
-            border: "none", // remove border
+            fontWeight: "normal",
+            fontSize: "12px",
+            padding: "6px 10px",
+            border: "none",
           }}
         >
           <FaUpload style={{ marginRight: "5px", fontSize: "16px" }} /> 업로드
@@ -70,12 +70,12 @@ const Header = () => {
           to={isLoggedIn ? "/" : "/login"}
           className="btn"
           style={{
-            backgroundColor: "#fffbe6", // very pale yellow
+            backgroundColor: "#f7f5f2",
             color: "black",
-            fontWeight: "normal", // regular font weight
-            fontSize: "12px", // smaller text size
-            padding: "6px 10px", // slightly smaller button size
-            border: "none", // remove border
+            fontWeight: "normal",
+            fontSize: "12px",
+            padding: "6px 10px",
+            border: "none",
           }}
         >
           {isLoggedIn ? (
