@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { Container, Navbar, Form, FormControl, Button } from "react-bootstrap";
-import { FaUserPlus, FaSignInAlt, FaSignOutAlt, FaUsers } from "react-icons/fa";
+import { Container, Navbar, Form, FormControl } from "react-bootstrap";
+import {
+  FaUpload,
+  FaSignInAlt,
+  FaSignOutAlt,
+  FaUserPlus,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -32,22 +37,56 @@ const Header = () => {
             onKeyDown={handleSearchSubmit}
           />
         </Form>
-        <Link to="/create-team" className="btn btn-outline-dark me-2">
-          <FaUsers /> Create a Team
+        <Link
+          to="/create-team"
+          className="btn me-2"
+          style={{
+            backgroundColor: "#fffbe6", // very pale yellow
+            color: "black",
+            fontWeight: "normal", // regular font weight
+            fontSize: "12px", // smaller text size
+            padding: "6px 10px", // slightly smaller button size
+            border: "none", // remove border
+          }}
+        >
+          <FaUserPlus style={{ marginRight: "5px", fontSize: "16px" }} /> 팀원
+          초대
         </Link>
-        {/* <Link to="/signup" className="btn btn-outline-dark me-2">
-          <FaUserPlus /> Signup
-        </Link> */}
-        <Link to={isLoggedIn ? "/" : "/login"} className="btn btn-outline-dark">
+        <Link
+          to="/upload"
+          className="btn me-2"
+          style={{
+            backgroundColor: "#fffbe6", // very pale yellow
+            color: "black",
+            fontWeight: "normal", // regular font weight
+            fontSize: "12px", // smaller text size
+            padding: "6px 10px", // slightly smaller button size
+            border: "none", // remove border
+          }}
+        >
+          <FaUpload style={{ marginRight: "5px", fontSize: "16px" }} /> 업로드
+        </Link>
+        <Link
+          to={isLoggedIn ? "/" : "/login"}
+          className="btn"
+          style={{
+            backgroundColor: "#fffbe6", // very pale yellow
+            color: "black",
+            fontWeight: "normal", // regular font weight
+            fontSize: "12px", // smaller text size
+            padding: "6px 10px", // slightly smaller button size
+            border: "none", // remove border
+          }}
+        >
           {isLoggedIn ? (
             <>
-              <FaSignOutAlt style={{ marginRight: "5px" }} />
-              Logout
+              <FaSignOutAlt style={{ marginRight: "5px", fontSize: "16px" }} />
+              로그아웃
             </>
           ) : (
             <>
-              <FaSignInAlt style={{ marginRight: "5px" }} />
-              Signup / Login
+              <FaSignInAlt style={{ marginRight: "5px", fontSize: "16px" }} />
+              로그인 / 회원가입
             </>
           )}
         </Link>
