@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Container, Navbar, Form, FormControl, Button } from "react-bootstrap";
 import { FaUserPlus, FaSignInAlt, FaSignOutAlt, FaUsers } from "react-icons/fa";
-import { Link } from "react-router-dom"; // 리액트 라우터의 Link 컴포넌트를 불러옵니다.
+import { Link } from "react-router-dom";
 
 const Header = () => {
-  const isLoggedIn = true; // 예시로 항상 로그인되지 않은 상태를 가정합니다.
+  const isLoggedIn = false;
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (event) => {
@@ -14,6 +14,7 @@ const Header = () => {
   const handleSearchSubmit = (event) => {
     if (event.key === "Enter") {
       console.log(searchTerm);
+      event.preventDefault();
     }
   };
 
@@ -34,9 +35,9 @@ const Header = () => {
         <Link to="/create-team" className="btn btn-outline-dark me-2">
           <FaUsers /> Create a Team
         </Link>
-        <Link to="/signup" className="btn btn-outline-dark me-2">
+        {/* <Link to="/signup" className="btn btn-outline-dark me-2">
           <FaUserPlus /> Signup
-        </Link>
+        </Link> */}
         <Link to={isLoggedIn ? "/" : "/login"} className="btn btn-outline-dark">
           {isLoggedIn ? (
             <>
@@ -46,7 +47,7 @@ const Header = () => {
           ) : (
             <>
               <FaSignInAlt style={{ marginRight: "5px" }} />
-              Login
+              Signup / Login
             </>
           )}
         </Link>
