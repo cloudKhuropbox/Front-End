@@ -13,10 +13,10 @@ const NavBar = () => {
       fontFamily: "Arial, sans-serif",
       color: "#495057",
       fontWeight: "normal",
+      border: "1px solid #e1e1e1",
     },
     section: {
-      padding: "20px 10px",
-      borderBottom: "1px solid #e1e1e1",
+      padding: "15px 10px",
     },
     link: {
       color: "#495057",
@@ -39,7 +39,7 @@ const NavBar = () => {
       width: "100%",
     },
     subItem: {
-      padding: "15px 25px",
+      padding: "10px 25px",
       fontSize: "15px",
     },
     icon: {
@@ -51,7 +51,7 @@ const NavBar = () => {
       transform: "rotate(180deg)",
     },
     teamSpaceGap: {
-      marginTop: "20px",
+      marginTop: "10px",
     },
   };
 

@@ -24,14 +24,14 @@ const Header = () => {
   };
 
   return (
-    <Navbar>
+    <Navbar style={{ padding: "20px" }}>
       <Container fluid>
         <Form className="d-flex flex-grow-1 mx-2">
           <FormControl
             type="search"
             placeholder="Search"
             className="me-2"
-            style={{ width: "100%" }}
+            style={{ width: "90%" }}
             value={searchTerm}
             onChange={handleSearchChange}
             onKeyDown={handleSearchSubmit}
