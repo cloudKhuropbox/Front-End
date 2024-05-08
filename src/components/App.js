@@ -19,7 +19,7 @@ function App() {
           }}
         >
           <Header />
-          <div style={{ flex: 1, padding: "69px 20px 20px" }}>
+          <div style={{ flex: 1, padding: "20px 20px 20px" }}>
             <Routes>
               <Route path="/" element={<MainPage />} />
             </Routes>

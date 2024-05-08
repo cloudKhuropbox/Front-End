@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Nav } from "react-bootstrap";
 import { FaDropbox } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -63,7 +64,8 @@ const NavBar = () => {
     <Nav className="flex-column" style={styles.navStyle}>
       <div style={styles.section}>
         <Nav.Link
-          href="/"
+          as={Link}
+          to={"/"}
           style={{
             ...styles.link,
             ...styles.title,
@@ -78,7 +80,8 @@ const NavBar = () => {
 
       <div style={styles.section}>
         <Nav.Link
-          href="/personal"
+          as={Link}
+          to={"/personal"}
           style={{ ...styles.link, ...styles.subtitle }}
         >
           Personal Space
@@ -107,13 +110,15 @@ const NavBar = () => {
         {isOpen && (
           <div style={styles.teamSpaceGap}>
             <Nav.Link
-              href="/team/1"
+              as={Link}
+              to={"/team/1"}
               style={{ ...styles.link, ...styles.subItem }}
             >
               Team 1
             </Nav.Link>
             <Nav.Link
-              href="/team/2"
+              as={Link}
+              to={"/team/2"}
               style={{ ...styles.link, ...styles.subItem }}
             >
               Team 2
