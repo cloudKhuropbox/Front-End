@@ -21,11 +21,11 @@ function MainPage() {
         <CurDir>{curDir === '/' ? "모든 파일" : curDir}</CurDir>
       </div>
       <ItemsContainer>
-        <FileItem type="folder"></FileItem>
-        <FileItem type="folder"></FileItem>
-        <FileItem type="img"></FileItem>
-        <FileItem type="excel"></FileItem>
-        <FileItem></FileItem>
+        <FileItem type="folder" id="1"></FileItem>
+        <FileItem type="folder" id="2"></FileItem>
+        <FileItem type="img" id="3"></FileItem>
+        <FileItem type="excel" id="4"></FileItem>
+        <FileItem id="5"></FileItem>
       </ItemsContainer>
     </div>
   );
