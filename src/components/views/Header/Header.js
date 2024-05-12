@@ -52,20 +52,6 @@ const Header = () => {
           <FaUserPlus style={{ marginRight: "5px", fontSize: "16px" }} /> 팀원
           초대
         </Link>
-        {/* <Link
-          to="/upload"
-          className="btn me-2"
-          style={{
-            backgroundColor: "#f7f5f2",
-            color: "black",
-            fontWeight: "normal",
-            fontSize: "12px",
-            padding: "6px 10px",
-            border: "none",
-          }}
-        >
-          <FaUpload style={{ marginRight: "5px", fontSize: "16px" }} /> 업로드
-        </Link> */}
         <Link
           to={isLoggedIn ? "/" : "/login"}
           className="btn"
