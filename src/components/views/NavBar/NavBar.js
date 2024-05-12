@@ -60,6 +60,10 @@ const NavBar = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleTeamLinkClick = (e) => {
+    e.stopPropagation();
+  };
+
   return (
     <Nav className="flex-column" style={styles.navStyle}>
       <div style={styles.section}>
@@ -111,6 +115,7 @@ const NavBar = () => {
               as={Link}
               to={"/team/1"}
               style={{ ...styles.link, ...styles.subItem }}
+              onClick={handleTeamLinkClick}
             >
               Team 1
             </Nav.Link>
@@ -118,6 +123,7 @@ const NavBar = () => {
               as={Link}
               to={"/team/2"}
               style={{ ...styles.link, ...styles.subItem }}
+              onClick={handleTeamLinkClick}
             >
               Team 2
             </Nav.Link>
