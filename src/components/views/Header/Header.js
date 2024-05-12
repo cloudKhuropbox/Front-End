@@ -31,7 +31,7 @@ const Header = () => {
             type="search"
             placeholder="Search"
             className="me-2"
-            style={{ width: "90%" }}
+            style={{ width: "80%" }}
             value={searchTerm}
             onChange={handleSearchChange}
             onKeyDown={handleSearchSubmit}
@@ -52,7 +52,7 @@ const Header = () => {
           <FaUserPlus style={{ marginRight: "5px", fontSize: "16px" }} /> 팀원
           초대
         </Link>
-        <Link
+        {/* <Link
           to="/upload"
           className="btn me-2"
           style={{
@@ -65,7 +65,7 @@ const Header = () => {
           }}
         >
           <FaUpload style={{ marginRight: "5px", fontSize: "16px" }} /> 업로드
-        </Link>
+        </Link> */}
         <Link
           to={isLoggedIn ? "/" : "/login"}
           className="btn"
