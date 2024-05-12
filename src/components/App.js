@@ -5,15 +5,17 @@ import NavBar from "./views/NavBar/NavBar";
 import MainPage from "./views/MainPage/MainPage";
 import Header from "./views/Header/Header";
 import LoginPage from "./views/LoginPage/LoginPage";
+import SignupPage from "./views/SignupPage/SignupPage";
 
 function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
+  const isSignupPage = location.pathname === "/signup";
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div style={{ display: "flex", flex: 1 }}>
-        {!isLoginPage && <NavBar />}
+        {!isLoginPage && !isSignupPage && <NavBar />}
         <div
           style={{
             display: "flex",
@@ -22,11 +24,12 @@ function App() {
             height: "100vh",
           }}
         >
-          {!isLoginPage && <Header />}
+          {!isLoginPage && !isSignupPage && <Header />}
           <div style={{ flex: 1, padding: "20px 20px 20px" }}>
             <Routes>
               <Route path="/" element={<LoginPage />} />
               <Route path="/personal" element={<MainPage />} />
+              <Route path="/signup" element={<SignupPage />}></Route>
             </Routes>
           </div>
         </div>
