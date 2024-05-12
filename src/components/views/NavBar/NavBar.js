@@ -87,7 +87,8 @@ const NavBar = () => {
       </div>
 
       <div style={styles.section} onClick={toggleTeamSpace}>
-        <div style={{ ...styles.link, ...styles.subtitle }}>
+        <div style={{ ...styles.link, ...styles.subtitle, marginLeft: "15px" }}>
+          Team Space
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -103,7 +104,6 @@ const NavBar = () => {
               vectorEffect="non-scaling-stroke"
             ></path>
           </svg>
-          Team Space
         </div>
         {isOpen && (
           <div style={styles.teamSpaceGap}>

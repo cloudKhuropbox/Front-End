@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function SignupPage() {
@@ -47,6 +48,15 @@ function SignupPage() {
   return (
     <div className="signup template d-flex justify-content-center align-items-center vh-100 bg-white">
       <div className="form_container p-5 rounded bg-white">
+        <div className="dropbox-icon-container mb-4">
+          <FaDropbox className="dropbox-icon" size={100} />
+          <h2
+            className="logo-text"
+            style={{ fontSize: "40px", fontWeight: "bolder" }}
+          >
+            KHUropbox
+          </h2>
+        </div>
         <form onSubmit={handleSignup}>
           {" "}
           {/* Added onSubmit event handler */}

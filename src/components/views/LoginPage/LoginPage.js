@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./style.css";
+import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function LoginPage() {
@@ -37,6 +38,10 @@ function LoginPage() {
   return (
     <div className="login template d-flex justify-content-center align-items-center vh-100 bg-white">
       <div className="form_container p-5 rounded bg-white">
+        <div className="dropbox-icon-container">
+          <FaDropbox className="dropbox-icon" size={100} />
+          <h2 className="logo-text">KHUropbox</h2>
+        </div>
         <form onSubmit={handleLogin}>
           {" "}
           {/* Added onSubmit event handler */}

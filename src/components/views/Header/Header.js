@@ -44,8 +44,8 @@ const Header = () => {
             border: "none",
           }}
         >
-          <FaUserPlus style={{ marginRight: "5px", fontSize: "16px" }} /> 팀원
-          초대
+          <FaUserPlus style={{ marginRight: "5px", fontSize: "16px" }} /> 팀
+          생성
         </Link>
         <Link
           to={isLoggedIn ? "/" : "/"}
