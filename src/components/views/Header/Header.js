@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { Container, Navbar, Form, FormControl } from "react-bootstrap";
-import {
-  FaUpload,
-  FaSignInAlt,
-  FaSignOutAlt,
-  FaUserPlus,
-} from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -53,7 +48,7 @@ const Header = () => {
           초대
         </Link>
         <Link
-          to={isLoggedIn ? "/" : "/login"}
+          to={isLoggedIn ? "/" : "/"}
           className="btn"
           style={{
             backgroundColor: "#f7f5f2",

@@ -65,16 +65,14 @@ const NavBar = () => {
       <div style={styles.section}>
         <Nav.Link
           as={Link}
-          to={"/"}
+          to={"/personal"}
           style={{
             ...styles.link,
             ...styles.title,
             backgroundColor: styles.navStyle.backgroundColor,
           }}
         >
-          <FaDropbox style={{ marginRight: "10px" }} />{" "}
-          {/* Include Dropbox icon */}
-          KHUropbox
+          <FaDropbox style={{ marginRight: "10px" }} /> KHUropbox
         </Nav.Link>
       </div>
 
