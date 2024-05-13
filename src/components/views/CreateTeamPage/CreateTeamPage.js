@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,6 +8,14 @@ function CreateTeamPage() {
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("User not authenticated.");
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -19,10 +27,6 @@ function CreateTeamPage() {
     }
 
     const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("Token not found");
-      return;
-    }
 
     const req = {
       teamName: teamName,
@@ -40,7 +44,7 @@ function CreateTeamPage() {
       );
       if (response.status === 200) {
         alert("성공적으로 팀을 생성했습니다.");
-        navigate.push("/");
+        navigate("/");
       } else {
         alert("팀을 생성하는 데 실패했습니다. 다시 시도해주세요.");
       }
