@@ -6,7 +6,16 @@ import axios from "axios";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState([
+    {
+      teamId: 1,
+      teamName: "mario's lab",
+    },
+    {
+      teamId: 2,
+      teamName: "luigi's lab",
+    },
+  ]);
   const [error, setError] = useState("");
 
   useEffect(() => {
