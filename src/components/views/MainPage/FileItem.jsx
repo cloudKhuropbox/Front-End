@@ -1,12 +1,11 @@
 import { faCheck, faFileExcel, faFolder, faImage, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components'
 import { checkedState } from '../../../recoil/atom';
 
-export default function FileItem({ type, name, kind, size }) {
-  // checked에서 자기자신이 있는지 확인하는 로직 필요, 추후 api 연동 후 id값으로 할 예정
+export default function FileItem({ id, type, name, kind, size }) {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [isCheck, setIsCheck] = useState(false);
 
@@ -24,20 +23,34 @@ export default function FileItem({ type, name, kind, size }) {
     default:
       icon = faQuestion
   }
+
+  useEffect(()=>{
+    if (checked.indexOf(id) == -1)
+      setIsCheck(false)
+  }, [checked])
+
   return (
     <ItemContainer onClick={(e) => {
-      if(!isCheck)
-        setChecked([name]) //id로 변경하기
-      setIsCheck(!isCheck)
+      setChecked([id])
+      setIsCheck(true)
     }}>
       <Hover>
         
       </Hover>
       <IconWrap>
         <CheckBox onClick={(e) => {
-          if(!isCheck)
-            setChecked((prev) => [...prev, name])
-          setIsCheck(!isCheck)
+          e.stopPropagation()
+          if(isCheck)
+            {
+              const newChecked = checked.filter((_id) => _id !== id)
+              setChecked(newChecked)
+              setIsCheck(false)
+            }
+          else
+            {
+              setChecked((prev) => [...prev, id])
+              setIsCheck(true)
+            }
         }}>
           {isCheck && <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>}
         </CheckBox>
