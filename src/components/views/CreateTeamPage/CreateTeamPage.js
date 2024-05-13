@@ -18,17 +18,15 @@ function CreateTeamPage() {
       setTeamNameError("*팀 이름을 입력해주세요.");
     }
 
-    const userId = localStorage.getItem("userId");
-
-    if (!userId) {
-      console.error("User ID not found");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token not found");
       return;
     }
 
     const req = {
       teamName: teamName,
     };
-
     try {
       const response = await axios.post(
         "http://localhost:8080/teams/create",
@@ -36,6 +34,7 @@ function CreateTeamPage() {
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
