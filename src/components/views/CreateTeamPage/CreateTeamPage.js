@@ -1,29 +1,53 @@
 import React, { useState } from "react";
 import { FaUsers } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function CreateTeamPage() {
   // State variable for teamName and error messages
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
+  const navigate = useNavigate();
 
-  // Function to handle form submission
-  const handleCreateTeam = (e) => {
+  const handleCreateTeam = async (e) => {
     e.preventDefault();
 
-    // Reset previous error messages
     setTeamNameError("");
 
-    // Check if teamName is empty
     if (!teamName) {
-      setTeamNameError("*Team name is required");
+      setTeamNameError("*팀 이름을 입력해주세요.");
     }
 
-    // Proceed with create team logic if team name is provided
-    if (teamName) {
-      // Your create team logic here
-      console.log("teamName ", teamName);
-      console.log("Team created successfully");
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      console.error("User ID not found");
+      return;
+    }
+
+    const req = {
+      teamName: teamName,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/teams/create",
+        req,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("성공적으로 팀을 생성했습니다.");
+        navigate.push("/");
+      } else {
+        alert("팀을 생성하는 데 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      alert("에러가 발생했습니다. 다시 시도해주세요.");
+      console.error("Error:", error);
     }
   };
 
