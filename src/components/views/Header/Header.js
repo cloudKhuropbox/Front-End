@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Container, Navbar, Form, FormControl } from "react-bootstrap";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const isLoggedIn = false;
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -16,6 +17,12 @@ const Header = () => {
       console.log(searchTerm);
       event.preventDefault();
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/");
   };
 
   return (
@@ -47,30 +54,39 @@ const Header = () => {
           <FaUserPlus style={{ marginRight: "5px", fontSize: "16px" }} /> 팀
           생성
         </Link>
-        <Link
-          to={isLoggedIn ? "/" : "/"}
-          className="btn"
-          style={{
-            backgroundColor: "#f7f5f2",
-            color: "black",
-            fontWeight: "normal",
-            fontSize: "12px",
-            padding: "6px 10px",
-            border: "none",
-          }}
-        >
-          {isLoggedIn ? (
-            <>
-              <FaSignOutAlt style={{ marginRight: "5px", fontSize: "16px" }} />
-              로그아웃
-            </>
-          ) : (
-            <>
-              <FaSignInAlt style={{ marginRight: "5px", fontSize: "16px" }} />
-              로그인 / 회원가입
-            </>
-          )}
-        </Link>
+        {isLoggedIn ? (
+          <button
+            className="btn"
+            onClick={handleLogout}
+            style={{
+              backgroundColor: "#f7f5f2",
+              color: "black",
+              fontWeight: "normal",
+              fontSize: "12px",
+              padding: "6px 10px",
+              border: "none",
+            }}
+          >
+            <FaSignOutAlt style={{ marginRight: "5px", fontSize: "16px" }} />
+            로그아웃
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            className="btn"
+            style={{
+              backgroundColor: "#f7f5f2",
+              color: "black",
+              fontWeight: "normal",
+              fontSize: "12px",
+              padding: "6px 10px",
+              border: "none",
+            }}
+          >
+            <FaSignInAlt style={{ marginRight: "5px", fontSize: "16px" }} />
+            로그인 / 회원가입
+          </Link>
+        )}
       </Container>
     </Navbar>
   );
