@@ -1,60 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Nav } from "react-bootstrap";
 import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [teams, setTeams] = useState([
+    {
+      teamId: 1,
+      teamName: "mario's lab",
+    },
+    {
+      teamId: 2,
+      teamName: "luigi's lab",
+    },
+  ]);
+  const [error, setError] = useState("");
 
-  const styles = {
-    navStyle: {
-      backgroundColor: "#f7f5f2",
-      height: "100vh",
-      width: "250px",
-      fontFamily: "Arial, sans-serif",
-      color: "#495057",
-      fontWeight: "normal",
-      border: "1px solid #e1e1e1",
-    },
-    section: {
-      padding: "15px 10px",
-    },
-    link: {
-      color: "#495057",
-      textDecoration: "none",
-      display: "flex",
-      alignItems: "center",
-      cursor: "pointer",
-      justifyContent: "flex-start",
-    },
-    title: {
-      fontWeight: "bolder",
-      alignItems: "center",
-      fontSize: "20px",
-    },
-    subtitle: {
-      fontWeight: "bold",
-      fontSize: "18px",
-      display: "flex",
-      alignItems: "center",
-      width: "100%",
-    },
-    subItem: {
-      padding: "10px 25px",
-      fontSize: "15px",
-    },
-    icon: {
-      marginRight: "10px",
-      transform: "rotate(0deg)",
-      transition: "transform 0.3s ease",
-    },
-    iconOpen: {
-      transform: "rotate(180deg)",
-    },
-    teamSpaceGap: {
-      marginTop: "10px",
-    },
-  };
+  useEffect(() => {
+    const fetchTeams = async () => {
+      const userName = localStorage.getItem("userName");
+      const token = localStorage.getItem("token");
+
+      if (!userName || !token) {
+        setError("User not authenticated.");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/teams/list/${userName}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setTeams(response.data);
+        } else {
+          alert(
+            "팀 스페이스 목록을 불러오는 데 실패했습니다. 다시 시도해주세요."
+          );
+        }
+      } catch (error) {
+        alert("에러가 발생했습니다. 다시 시도해주세요.");
+        console.error("Error:", error);
+      }
+    };
+
+    fetchTeams();
+  }, []);
 
   const toggleTeamSpace = () => {
     setIsOpen(!isOpen);
@@ -111,27 +110,78 @@ const NavBar = () => {
         </div>
         {isOpen && (
           <div style={styles.teamSpaceGap}>
-            <Nav.Link
-              as={Link}
-              to={"/team/1"}
-              style={{ ...styles.link, ...styles.subItem }}
-              onClick={handleTeamLinkClick}
-            >
-              Team 1
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to={"/team/2"}
-              style={{ ...styles.link, ...styles.subItem }}
-              onClick={handleTeamLinkClick}
-            >
-              Team 2
-            </Nav.Link>
+            {teams.length > 0 ? (
+              teams.map((team) => (
+                <Nav.Link
+                  key={team.teamId}
+                  as={Link}
+                  to={`/team/${team.teamId}`}
+                  style={{ ...styles.link, ...styles.subItem }}
+                  onClick={handleTeamLinkClick}
+                >
+                  {team.teamName}
+                </Nav.Link>
+              ))
+            ) : (
+              <div style={{ padding: "10px 25px", fontSize: "15px" }}>
+                {error ? error : "No Teamspace Available"}
+              </div>
+            )}
           </div>
         )}
       </div>
     </Nav>
   );
+};
+
+const styles = {
+  navStyle: {
+    backgroundColor: "#f7f5f2",
+    height: "100vh",
+    width: "250px",
+    fontFamily: "Arial, sans-serif",
+    color: "#495057",
+    fontWeight: "normal",
+    border: "1px solid #e1e1e1",
+  },
+  section: {
+    padding: "15px 10px",
+  },
+  link: {
+    color: "#495057",
+    textDecoration: "none",
+    display: "flex",
+    alignItems: "center",
+    cursor: "pointer",
+    justifyContent: "flex-start",
+  },
+  title: {
+    fontWeight: "bolder",
+    alignItems: "center",
+    fontSize: "20px",
+  },
+  subtitle: {
+    fontWeight: "bold",
+    fontSize: "18px",
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+  },
+  subItem: {
+    padding: "10px 25px",
+    fontSize: "15px",
+  },
+  icon: {
+    marginRight: "10px",
+    transform: "rotate(0deg)",
+    transition: "transform 0.3s ease",
+  },
+  iconOpen: {
+    transform: "rotate(180deg)",
+  },
+  teamSpaceGap: {
+    marginTop: "10px",
+  },
 };
 
 export default NavBar;
