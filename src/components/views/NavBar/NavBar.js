@@ -3,56 +3,59 @@ import { Nav } from "react-bootstrap";
 import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_SERVER } from "./../../../config/apiConfig";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [teams, setTeams] = useState([
-    {
-      teamId: 1,
-      teamName: "mario's lab",
-    },
-    {
-      teamId: 2,
-      teamName: "luigi's lab",
-    },
-  ]);
+  const [teams, setTeams] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchTeams = async () => {
-      const userName = localStorage.getItem("userName");
-      const token = localStorage.getItem("token");
+    fetchTeams();
+  }, []);
 
-      if (!userName || !token) {
-        setError("User not authenticated.");
-        return;
+  const fetchTeams = async () => {
+    const userName = localStorage.getItem("userName");
+    const token = localStorage.getItem("token");
+
+    if (!userName || !token) {
+      setError("User not authenticated.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API_SERVER}/teams/list/${userName}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200 && response.data) {
+        setTeams(response.data);
+        setError("");
+      } else {
+        setError("팀 스페이스를 불러오는 데 실패했습니다.");
       }
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      setError("An error occurred while fetching team spaces.");
+    }
+  };
 
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/teams/list/${userName}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          setTeams(response.data);
-        } else {
-          alert(
-            "팀 스페이스 목록을 불러오는 데 실패했습니다. 다시 시도해주세요."
-          );
-        }
-      } catch (error) {
-        alert("에러가 발생했습니다. 다시 시도해주세요.");
-        console.error("Error:", error);
-      }
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchTeams();
     };
 
+    window.addEventListener("refreshTeamList", handleRefresh);
+
+    // Initial fetch and set up event listener
     fetchTeams();
+
+    return () => {
+      window.removeEventListener("refreshTeamList", handleRefresh);
+    };
   }, []);
 
   const toggleTeamSpace = () => {

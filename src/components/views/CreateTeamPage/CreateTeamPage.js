@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_SERVER } from "./../../../config/apiConfig";
 
 function CreateTeamPage() {
-  // State variable for teamName and error messages
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
   const navigate = useNavigate();
@@ -19,7 +19,6 @@ function CreateTeamPage() {
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
-
     setTeamNameError("");
 
     if (!teamName) {
@@ -32,19 +31,15 @@ function CreateTeamPage() {
       teamName: teamName,
     };
     try {
-      const response = await axios.post(
-        "http://localhost:8080/teams/create",
-        req,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_SERVER}/teams/create`, req, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.status === 200) {
         alert("성공적으로 팀을 생성했습니다.");
-        navigate("/");
+        navigate(`/team/${response.data}`);
       } else {
         alert("팀을 생성하는 데 실패했습니다. 다시 시도해주세요.");
       }
