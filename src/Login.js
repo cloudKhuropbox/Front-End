@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './style.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Login() {
@@ -8,7 +8,8 @@ function Login() {
   const [password, setPassword] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [error, setError] = useState('');
+  const [Error, error] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,27 +26,36 @@ function Login() {
     }
 
     if (username && password) {
-      console.log({username, password});
-    axios.post(
-      "http://localhost:8080/auth/signin",
-      {
-          "username": "admin",
-          "password": "1234"
-      },
-      {
-          headers: {
-              'Content-type': 'application/json',
-              'Accept': '*/*'
-          }
-      }).then(res => {
-          console.log(res.data);
-          alert("Successfully Login")
-      }).catch(err => {
-          console.log(err);
-          alert("Cannot Login")
-      });
+      console.log("username",username);
+      console.log("password")
     }
-  }
+
+    const req = {
+      username: username,
+      password: password
+    };
+
+    try {
+      const response = await axios.post(
+        "http://182.218.159.76:8080/auth/signin",
+        req,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("login successfully");
+        navigate("/personal");
+      } else {
+        console.log(response.status)
+      }
+    } catch (error) {
+      alert("Error occured. Please try again.");
+      console.error("Error:", error)
+    }
+  };
 
   return (
     <div className='login template d-flex justify-content-center align-items-center vh-100 bg-primary'>

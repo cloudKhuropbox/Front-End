@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Signup() {
@@ -8,9 +8,7 @@ function Signup() {
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [signupError, setSignupError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const baseUrl = "http://localhost:8080";
+ const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -28,28 +26,36 @@ function Signup() {
     }
 
     if (username && password) {
-      setIsLoading(true);
+      console.log("username:",username)
 
-      try {
-        const response = await axios.post(`${baseUrl}/auth/signup`, {
-          username,
-          password,
-        });
-  
-        if (response.status === 201) {
-          alert(` You have created: ${JSON.stringify(response.data)}`);
-          setIsLoading(false);
-          setUsername("");
-          setPassword("");
-        } else {
-          throw new Error("An error has occurred");
-        }
-      } catch (error) {
-        alert("An error has occurred");
-        setIsLoading(false);
-      }
-    };
     }
+
+    const req = {
+      username: username,
+      password: password
+    };
+
+    try {
+      const response = await axios.post(
+        "http://182.218.159.76:8080/auth/signup",
+        req,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("account created successfully");
+        navigate("/personal");
+      } else {
+        console.log(response.status)
+      }
+    } catch (error) {
+      alert("Error occured. Please try again.");
+      console.error("Error:", error)
+    }
+  };
 
   return (
     <div className='signup template d-flex justify-content-center align-items-center vh-100 bg-primary'>
