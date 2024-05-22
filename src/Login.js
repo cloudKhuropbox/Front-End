@@ -1,54 +1,68 @@
 import React, { useState } from 'react';
 import './style.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function Login() {
-  // State variables for email, password, and error messages
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [error, setError] = useState('');
 
-  // Function to handle form submission
-  const handleLogin = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset previous error messages
-    setEmailError('');
+    setUsernameError('');
     setPasswordError('');
 
-    // Check if email is empty
-    if (!email) {
-      setEmailError('*Email is required');
+    if (!username) {
+      setUsernameError('*Username is required');
     }
 
-    // Check if password is empty
     if (!password) {
       setPasswordError('*Password is required');
     }
 
-    // Proceed with login logic if both email and password are provided
-    if (email && password) {
-      // Your login logic here
-      console.log('Logged in successfully');
+    if (username && password) {
+      console.log({username, password});
+    axios.post(
+      "http://localhost:8080/auth/signin",
+      {
+          "username": "admin",
+          "password": "1234"
+      },
+      {
+          headers: {
+              'Content-type': 'application/json',
+              'Accept': '*/*'
+          }
+      }).then(res => {
+          console.log(res.data);
+          alert("Successfully Login")
+      }).catch(err => {
+          console.log(err);
+          alert("Cannot Login")
+      });
     }
-  };
+  }
 
   return (
     <div className='login template d-flex justify-content-center align-items-center vh-100 bg-primary'>
       <div className='form_container p-5 rounded bg-white'>
-        <form onSubmit={handleLogin}> {/* Added onSubmit event handler */}
+        {error && <p className="text-danger text-center mb-3" style={{ fontSize: '1.2rem' }}>{error}</p>}
+        <form onSubmit={handleSubmit}>
           <h3 className='text-center'>Login</h3>
           <div className='mb-2'>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <input
-              type="email"
-              placeholder='Email'
+              type="text"
+              placeholder='Username'
               className='form-control'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-            {emailError && <div className='text-danger'>{emailError}</div>} {/* Display email error message */}
+            {usernameError && <p className="text-danger">{usernameError}</p>}
           </div>
           <div className='mb-2'>
             <label htmlFor="password">Password</label>
@@ -59,7 +73,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {passwordError && <div className='text-danger'>{passwordError}</div>} {/* Display password error message */}
+            {passwordError && <p className="text-danger">{passwordError}</p>}
           </div>
           <div className='mb-2'>
             <input type="checkbox" className='custom-control custom-checbox' id="check"/>
@@ -68,7 +82,7 @@ function Login() {
             </label>
           </div>
           <div className='d-grid'>
-            <button type="submit" className='btn btn-primary'>Login</button> {/* Added type="submit" */}
+            <button type="submit" className='btn btn-primary'>Login</button>
           </div>
           <p className='text-end mt-2'>
             <a href=''>Forgot Password?</a><Link to='/signup' className='ms-2'>Sign up</Link>
