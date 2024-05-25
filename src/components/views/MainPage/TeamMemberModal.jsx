@@ -3,18 +3,20 @@ import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
 import { Modal, Button, InputGroup, FormControl, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from 'recoil';
+import { userState } from '../../../recoil/userAtom'; 
 
 function TeamMemberModal({ show, onHide, teamId }) {
   const [members, setMembers] = useState([]);
   const [currentUserRole, setCurrentUserRole] = useState(null);
   const [inviteUserName, setInviteUserName] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [user, setUser] = useRecoilState(userState); 
 
   const navigate = useNavigate();
 
-  // const userName = localStorage.getItem("userName");
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const userId = user.userId;
+  const token = user.token;
 
   const fetchTeamMembers = useCallback(async () => {
     try {

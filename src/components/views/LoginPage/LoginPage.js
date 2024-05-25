@@ -4,6 +4,8 @@ import { FaDropbox } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { API_SERVER } from "../../../config/apiConfig";
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../../../recoil/userAtom'; 
 
 function LoginPage() {
   // State variables for email, password, and error messages
@@ -13,6 +15,7 @@ function LoginPage() {
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const setUser = useSetRecoilState(userState);
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
@@ -54,9 +57,13 @@ function LoginPage() {
       );
       if (response.status === 200) {
         alert("로그인에 성공했습니다.");
-        localStorage.setItem('userId', response.data.id);
-        localStorage.setItem('userName', response.data.username);
-        localStorage.setItem('token', response.data.token);
+        const { id, username, token } = response.data;
+        
+        localStorage.setItem('userId', id);
+        localStorage.setItem('userName', username);
+        localStorage.setItem('token', token);
+
+        setUser({ userId: id, userName: username, token });
 
         navigate("/personal");
       } else {

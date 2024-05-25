@@ -3,19 +3,23 @@ import { FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/userAtom'; 
 
 function CreateTeamPage() {
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
   const navigate = useNavigate();
+  const user = useRecoilValue(userState); 
+
+  const token = user.token;
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (!token) {
       alert("User not authenticated.");
       navigate("/");
     }
-  }, [navigate]);
+  }, [navigate, user.token]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -24,8 +28,6 @@ function CreateTeamPage() {
     if (!teamName) {
       setTeamNameError("*팀 이름을 입력해주세요.");
     }
-
-    const token = localStorage.getItem("token");
 
     const req = {
       teamName: teamName,

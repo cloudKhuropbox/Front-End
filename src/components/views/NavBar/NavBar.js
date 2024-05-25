@@ -4,19 +4,22 @@ import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../../recoil/userAtom'; 
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState("");
+  const user = useRecoilValue(userState); 
 
   useEffect(() => {
     fetchTeams();
   }, []);
 
   const fetchTeams = async () => {
-    const userName = localStorage.getItem("userName");
-    const token = localStorage.getItem("token");
+    const userName = user.userName;
+    const token = user.token;
 
     if (!userName || !token) {
       setError("User not authenticated.");
@@ -50,7 +53,6 @@ const NavBar = () => {
 
     window.addEventListener("refreshTeamList", handleRefresh);
 
-    // Initial fetch and set up event listener
     fetchTeams();
 
     return () => {

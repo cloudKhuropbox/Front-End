@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Container, Navbar, Form, FormControl } from "react-bootstrap";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { useRecoilState } from 'recoil';
+import { userState } from '../../../recoil/userAtom'; 
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [user, setUser] = useRecoilState(userState); 
+
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    if (user.token) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
@@ -31,6 +34,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.clear();
+    setUser({ userId: null, userName: null, token: null }); 
     setIsLoggedIn(false);
     navigate("/");
   };
