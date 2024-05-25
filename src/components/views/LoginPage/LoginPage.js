@@ -1,26 +1,30 @@
 import React, { useState } from "react";
 import "./style.css";
 import { FaDropbox } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { API_SERVER } from "../../../config/apiConfig";
 
 function LoginPage() {
   // State variables for email, password, and error messages
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState("");
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   // Function to handle form submission
-  const handleLogin = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Reset previous error messages
-    setEmailError("");
+    setUsernameError('');
     setPasswordError("");
 
     // Check if email is empty
-    if (!email) {
-      setEmailError("*Email is required");
+    if (!username) {
+      setUsernameError("*Username is required");
     }
 
     // Check if password is empty
@@ -29,9 +33,38 @@ function LoginPage() {
     }
 
     // Proceed with login logic if both email and password are provided
-    if (email && password) {
-      console.log("email", email);
-      console.log("password", password);
+    if (username && password) {
+      console.log("username",username);
+    }
+
+    const req = {
+      username: username,
+      password: password
+    };
+
+      try {
+      const response = await axios.post(
+        `${API_SERVER}/auth/signin`,
+        req,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("로그인에 성공했습니다.");
+        localStorage.setItem('userId', response.data.id);
+        localStorage.setItem('userName', response.data.username);
+        localStorage.setItem('token', response.data.token);
+
+        navigate("/personal");
+      } else {
+        console.log(response.status)
+      }
+    } catch (error) {
+      alert("문제가 발생했습니다. 다시 시도해주세요.");
+      console.error("Error:", error)
     }
   };
 
@@ -42,21 +75,21 @@ function LoginPage() {
           <FaDropbox className="dropbox-icon" size={100} />
           <h2 className="logo-text">KHUropbox</h2>
         </div>
-        <form onSubmit={handleLogin}>
+        {error && <p className="text-danger text-center mb-3" style={{ fontSize: '1.2rem' }}>{error}</p>}
+        <form onSubmit={handleSubmit}>
           {" "}
           {/* Added onSubmit event handler */}
           <h3 className="text-center">Login</h3>
           <div className="mb-2">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <input
-              type="email"
-              placeholder="Email"
+              type="text"
+              placeholder="Username"
               className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-            {emailError && <div className="text-danger">{emailError}</div>}{" "}
-            {/* Display email error message */}
+            {usernameError && <p className="text-danger">{usernameError}</p>}{" "}
           </div>
           <div className="mb-2">
             <label htmlFor="password">Password</label>
@@ -67,10 +100,7 @@ function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {passwordError && (
-              <div className="text-danger">{passwordError}</div>
-            )}{" "}
-            {/* Display password error message */}
+            {passwordError && <p className="text-danger">{passwordError}</p>}{" "}
           </div>
           <div className="mb-2">
             <input

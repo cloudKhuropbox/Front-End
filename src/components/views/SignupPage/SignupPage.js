@@ -1,47 +1,62 @@
 import React, { useState } from "react";
 import { FaDropbox } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios'
+import { API_SERVER } from "../../../config/apiConfig";
 
 function SignupPage() {
-  // State variables for username, email, password, and error messages
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [signupError, setSignupError] = useState('');
+  const navigate = useNavigate();
 
-  // Function to handle form submission
-  const handleSignup = (e) => {
+
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    // Reset previous error messages
-    setUsernameError("");
-    setEmailError("");
-    setPasswordError("");
+    setUsernameError('');
+    setPasswordError('');
+    setSignupError('');
 
-    // Check if username is empty
     if (!username) {
-      setUsernameError("*Username is required");
+      setUsernameError('*Username is required');
     }
 
-    // Check if email is empty
-    if (!email) {
-      setEmailError("*Email is required");
-    }
-
-    // Check if password is empty
     if (!password) {
-      setPasswordError("*Password is required");
+      setPasswordError('*Password is required');
     }
 
-    // Proceed with signup logic if all fields are provided
-    if (username && email && password) {
-      // Your signup logic here
-      console.log("username ", username);
-      console.log("email ", email);
-      console.log("password ", password);
-      console.log("Signed up successfully");
+    if (username && password) {
+      console.log("username",username);
+    }
+
+    const req = {
+      username: username,
+      password: password
+    };
+
+
+    try {
+      const response = await axios.post(
+        `${API_SERVER}/auth/signup`,
+        req,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("회원가입에 성공했습니다.");
+        navigate("/");
+      } else {
+        console.log(response.status)
+      }
+    } catch (error) {
+      alert("문제가 발생했습니다. 다시 시도해주세요.");
+      console.error("Error:", error)
     }
   };
 
@@ -59,7 +74,6 @@ function SignupPage() {
         </div>
         <form onSubmit={handleSignup}>
           {" "}
-          {/* Added onSubmit event handler */}
           <h3 className="text-center">Sign Up</h3>
           <div className="mb-2">
             <label htmlFor="username">Username</label>
@@ -73,19 +87,6 @@ function SignupPage() {
             {usernameError && (
               <div className="text-danger">{usernameError}</div>
             )}{" "}
-            {/* Display username error message */}
-          </div>
-          <div className="mb-2">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              placeholder="Email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {emailError && <div className="text-danger">{emailError}</div>}{" "}
-            {/* Display email error message */}
           </div>
           <div className="mb-2">
             <label htmlFor="password">Password</label>
@@ -99,14 +100,13 @@ function SignupPage() {
             {passwordError && (
               <div className="text-danger">{passwordError}</div>
             )}{" "}
-            {/* Display password error message */}
           </div>
           <div className="d-grid mt-2">
             <button type="submit" className="btn btn-primary">
               Sign Up
             </button>{" "}
-            {/* Added type="submit" */}
           </div>
+          {signupError && <div className='text-danger'>{signupError}</div>}
           <p className="text-end mt-2">
             Already have an account?
             <Link to="/" className="ms-2">
