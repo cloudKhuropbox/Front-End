@@ -2,49 +2,46 @@ import React, { useState, useEffect } from "react";
 import { FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_SERVER } from "../../../config/apiConfig";
+import { useRecoilValue } from "recoil";
+import { userState, isLoggedInState } from "../../../recoil/userAtom";
 
 function CreateTeamPage() {
-  // State variable for teamName and error messages
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
   const navigate = useNavigate();
+  const user = useRecoilValue(userState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!isLoggedIn) {
       alert("User not authenticated.");
       navigate("/");
     }
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
-
     setTeamNameError("");
 
     if (!teamName) {
       setTeamNameError("*팀 이름을 입력해주세요.");
+      return;
     }
-
-    const token = localStorage.getItem("token");
 
     const req = {
       teamName: teamName,
     };
     try {
-      const response = await axios.post(
-        "http://localhost:8080/teams/create",
-        req,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_SERVER}/teams/create`, req, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       if (response.status === 200) {
         alert("성공적으로 팀을 생성했습니다.");
-        navigate("/");
+        navigate(`/team/${response.data}`);
       } else {
         alert("팀을 생성하는 데 실패했습니다. 다시 시도해주세요.");
       }
@@ -73,11 +70,8 @@ function CreateTeamPage() {
           </h2>
         </div>
         <form onSubmit={handleCreateTeam}>
-          {" "}
           <h3 className="text-center">Team Space</h3>
           <div className="mb-2">
-            {" "}
-            {/* Adjusted class for consistent margin */}
             <label htmlFor="teamName">Team Name</label>
             <input
               type="text"
@@ -91,8 +85,6 @@ function CreateTeamPage() {
             )}
           </div>
           <div className="d-grid mt-3">
-            {" "}
-            {/* Adjusted class for consistent margin */}
             <button type="submit" className="btn btn-primary">
               Create a Team
             </button>

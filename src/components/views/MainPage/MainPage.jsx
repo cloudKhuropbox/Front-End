@@ -6,22 +6,34 @@ import { useRecoilState } from "recoil";
 import { checkedState } from "../../../recoil/atom";
 import { Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
+import TeamMemberModal from "./TeamMemberModal";
 
 function MainPage() {
+  const [showModal, setShowModal] = useState(false);
   const [checked, setChecked] = useRecoilState(checkedState);
   const [curDir, setCurDir] = useState("/");
   const location = useLocation();
+
   const isTeamPage = () => {
     return location.pathname.startsWith("/team/");
   };
+
+  const teamId = location.pathname.split("/")[2];
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <ActionBar>
         {isTeamPage() && (
-          <ActionBtn variant="outline-primary">팀원초대</ActionBtn>
+          <>
+            <ActionBtn variant="outline-primary" onClick={handleShowModal}>
+              팀스페이스 관리
+            </ActionBtn>
+          </>
         )}
-        <ActionBtn variant="outline-primary">공유</ActionBtn>
+        <ActionBtn variant="outline-secondary">공유</ActionBtn>
         <ActionBtn variant="outline-secondary">업로드</ActionBtn>
         <ActionBtn variant="outline-secondary">다운로드</ActionBtn>
         <ActionBtn variant="outline-secondary">삭제</ActionBtn>
@@ -36,6 +48,11 @@ function MainPage() {
         <FileItem type="excel" id="4"></FileItem>
         <FileItem id="5"></FileItem>
       </ItemsContainer>
+      <TeamMemberModal
+        show={showModal}
+        onHide={handleCloseModal}
+        teamId={teamId}
+      />
     </div>
   );
 }
