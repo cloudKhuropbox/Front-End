@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_SERVER } from "./../../../config/apiConfig";
+import { API_SERVER } from "../../../config/apiConfig";
 import { useRecoilValue } from "recoil";
 import { userState, isLoggedInState } from "../../../recoil/userAtom";
 
@@ -18,7 +18,7 @@ function CreateTeamPage() {
       alert("User not authenticated.");
       navigate("/");
     }
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -26,6 +26,7 @@ function CreateTeamPage() {
 
     if (!teamName) {
       setTeamNameError("*팀 이름을 입력해주세요.");
+      return;
     }
 
     const req = {
@@ -69,11 +70,8 @@ function CreateTeamPage() {
           </h2>
         </div>
         <form onSubmit={handleCreateTeam}>
-          {" "}
           <h3 className="text-center">Team Space</h3>
           <div className="mb-2">
-            {" "}
-            {/* Adjusted class for consistent margin */}
             <label htmlFor="teamName">Team Name</label>
             <input
               type="text"
@@ -87,8 +85,6 @@ function CreateTeamPage() {
             )}
           </div>
           <div className="d-grid mt-3">
-            {" "}
-            {/* Adjusted class for consistent margin */}
             <button type="submit" className="btn btn-primary">
               Create a Team
             </button>
