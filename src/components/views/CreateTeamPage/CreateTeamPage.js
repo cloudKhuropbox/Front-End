@@ -3,23 +3,22 @@ import { FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../recoil/userAtom'; 
+import { useRecoilValue } from "recoil";
+import { userState, isLoggedInState } from "../../../recoil/userAtom";
 
 function CreateTeamPage() {
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
   const navigate = useNavigate();
-  const user = useRecoilValue(userState); 
-
-  const token = user.token;
+  const user = useRecoilValue(userState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
-    if (!token) {
+    if (!isLoggedIn) {
       alert("User not authenticated.");
       navigate("/");
     }
-  }, [navigate, user.token]);
+  }, [navigate]);
 
   const handleCreateTeam = async (e) => {
     e.preventDefault();
@@ -36,7 +35,7 @@ function CreateTeamPage() {
       const response = await axios.post(`${API_SERVER}/teams/create`, req, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       });
       if (response.status === 200) {

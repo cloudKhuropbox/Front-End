@@ -1,19 +1,26 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
-import { Modal, Button, InputGroup, FormControl, Alert, Form } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  InputGroup,
+  FormControl,
+  Alert,
+  Form,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from 'recoil';
-import { userState } from '../../../recoil/userAtom'; 
-import './TeamMemberModal.css'; 
+import { useRecoilState } from "recoil";
+import { userState } from "../../../recoil/userAtom";
+import "./TeamMemberModal.css";
 
 function TeamMemberModal({ show, onHide, teamId }) {
   const [members, setMembers] = useState([]);
   const [currentUserRole, setCurrentUserRole] = useState(null);
   const [inviteUserName, setInviteUserName] = useState("");
-  const [inviteUserRole, setInviteUserRole] = useState("customer"); 
+  const [inviteUserRole, setInviteUserRole] = useState("customer");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [user, setUser] = useRecoilState(userState); 
+  const [user, setUser] = useRecoilState(userState);
 
   const navigate = useNavigate();
 
@@ -169,13 +176,14 @@ function TeamMemberModal({ show, onHide, teamId }) {
                       탈퇴
                     </Button>
                   ) : (
-                    currentUserRole === "admin" &&
-                    <Button
-                      variant="danger"
-                      onClick={() => handleRemove(member.username)}
-                    >
-                      추방
-                    </Button>
+                    currentUserRole === "admin" && (
+                      <Button
+                        variant="danger"
+                        onClick={() => handleRemove(member.username)}
+                      >
+                        추방
+                      </Button>
+                    )
                   )}
                 </td>
               </tr>
@@ -183,26 +191,30 @@ function TeamMemberModal({ show, onHide, teamId }) {
           </tbody>
         </table>
         {currentUserRole === "admin" && (
-        <InputGroup className="mt-3 invite-group">
-          <FormControl
-            placeholder="Username to invite"
-            value={inviteUserName}
-            onChange={(e) => setInviteUserName(e.target.value)}
-            className="invite-username"
-          />
-          <Form.Select
-            value={inviteUserRole}
-            onChange={(e) => setInviteUserRole(e.target.value)}
-            aria-label="Select role"
-            className="ml-2 invite-role"
-          >
-            <option value="customer">일반</option>
-            <option value="admin">관리자</option>
-          </Form.Select>
-          <Button variant="primary" onClick={handleInvite} className="invite-button">
-            초대하기
-          </Button>
-        </InputGroup>
+          <InputGroup className="mt-3 invite-group">
+            <FormControl
+              placeholder="Username to invite"
+              value={inviteUserName}
+              onChange={(e) => setInviteUserName(e.target.value)}
+              className="invite-username"
+            />
+            <Form.Select
+              value={inviteUserRole}
+              onChange={(e) => setInviteUserRole(e.target.value)}
+              aria-label="Select role"
+              className="ml-2 invite-role"
+            >
+              <option value="customer">일반</option>
+              <option value="admin">관리자</option>
+            </Form.Select>
+            <Button
+              variant="primary"
+              onClick={handleInvite}
+              className="invite-button"
+            >
+              초대하기
+            </Button>
+          </InputGroup>
         )}
       </Modal.Body>
       <Modal.Footer>

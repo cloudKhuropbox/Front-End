@@ -4,14 +4,15 @@ import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../recoil/userAtom'; 
+import { useRecoilValue } from "recoil";
+import { isLoggedInState, userState } from "../../../recoil/userAtom";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState("");
-  const user = useRecoilValue(userState); 
+  const user = useRecoilValue(userState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
     fetchTeams();
@@ -21,7 +22,7 @@ const NavBar = () => {
     const userName = user.userName;
     const token = user.token;
 
-    if (!userName || !token) {
+    if (!isLoggedIn) {
       setError("User not authenticated.");
       return;
     }
