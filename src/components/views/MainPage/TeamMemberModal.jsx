@@ -194,7 +194,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
                 <td>
                   {member.user.id === userId && member.role !== "owner" ? (
                     <Button variant="warning" onClick={handleLeave}>
-                      탈퇴
+                      탈퇴하기
                     </Button>
                   ) : (
                     member.user.id !== userId &&
@@ -203,7 +203,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
                         variant="danger"
                         onClick={() => handleRemove(member.user.username)}
                       >
-                        추방
+                        추방하기
                       </Button>
                     )
                   )}
