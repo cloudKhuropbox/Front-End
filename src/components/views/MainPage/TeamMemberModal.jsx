@@ -39,12 +39,15 @@ function TeamMemberModal({ show, onHide, teamId }) {
         }
       );
       if (response.status === 200) {
-        setMembers(response.data);
-        const currentUser = members.find((member) => member.id === userId);
+        setMembers(response.data.result);
+        const currentUser = response.data.result.find(
+          (member) => member.user.id === userId
+        );
         setCurrentUserRole(currentUser ? currentUser.role : null);
       }
     } catch (error) {
       alert("멤버를 불러오는 데 실패했습니다.");
+      console.error(error);
     }
   }, [teamId, token, userId]);
 
@@ -70,6 +73,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
         },
         {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -88,7 +92,10 @@ function TeamMemberModal({ show, onHide, teamId }) {
         `${API_SERVER}/teams/exile`,
         { userName, team: teamId },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       fetchTeamMembers();
@@ -100,9 +107,14 @@ function TeamMemberModal({ show, onHide, teamId }) {
   const handleLeave = async () => {
     try {
       const response = await axios.post(
-        `${API_SERVER}/teams/leave`,
-        { teamId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${API_SERVER}/teams/leave/${teamId}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (response.status === 200) {
         alert("탈퇴가 완료되었습니다.");
@@ -118,10 +130,13 @@ function TeamMemberModal({ show, onHide, teamId }) {
   const handleDeleteTeam = async () => {
     try {
       await axios.post(
-        `${API_SERVER}/teams/dissolution`,
-        { teamId },
+        `${API_SERVER}/teams/dissolution/${teamId}`,
+        {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       alert("팀이 성공적으로 삭제되었습니다.");
@@ -167,19 +182,26 @@ function TeamMemberModal({ show, onHide, teamId }) {
           </thead>
           <tbody>
             {members.map((member) => (
-              <tr key={member.id}>
-                <td>{member.username}</td>
-                <td>{member.role === "admin" ? "관리자" : "일반"}</td>
+              <tr key={member.user.id}>
+                <td>{member.user.username}</td>
                 <td>
-                  {member.id === userId ? (
+                  {member.role === "owner"
+                    ? "최고관리자"
+                    : member.role === "admin"
+                    ? "관리자"
+                    : "일반"}
+                </td>
+                <td>
+                  {member.user.id === userId && member.role !== "owner" ? (
                     <Button variant="warning" onClick={handleLeave}>
                       탈퇴
                     </Button>
                   ) : (
-                    currentUserRole === "admin" && (
+                    member.user.id !== userId &&
+                    currentUserRole !== "customer" && (
                       <Button
                         variant="danger"
-                        onClick={() => handleRemove(member.username)}
+                        onClick={() => handleRemove(member.user.username)}
                       >
                         추방
                       </Button>
@@ -190,7 +212,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
             ))}
           </tbody>
         </table>
-        {currentUserRole === "admin" && (
+        {currentUserRole !== "customer" && (
           <InputGroup className="mt-3 invite-group">
             <FormControl
               placeholder="Username to invite"
@@ -218,7 +240,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
         )}
       </Modal.Body>
       <Modal.Footer>
-        {currentUserRole === "admin" && (
+        {currentUserRole === "owner" && (
           <Button variant="danger" onClick={confirmDelete}>
             팀 삭제하기
           </Button>

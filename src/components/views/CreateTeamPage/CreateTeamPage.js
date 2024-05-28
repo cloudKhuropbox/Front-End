@@ -15,7 +15,7 @@ function CreateTeamPage() {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      alert("User not authenticated.");
+      alert("먼저 로그인해주세요.");
       navigate("/");
     }
   }, [navigate]);
@@ -38,7 +38,7 @@ function CreateTeamPage() {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert("성공적으로 팀을 생성했습니다.");
         navigate(`/team/${response.data}`);
       } else {
