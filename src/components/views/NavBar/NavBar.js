@@ -15,6 +15,7 @@ const NavBar = () => {
   const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
+
     if (isLoggedIn) {
       fetchTeams();
     }
@@ -25,11 +26,13 @@ const NavBar = () => {
 
     try {
       const response = await axios.get(`${API_SERVER}/teams/list`, {
+
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+
       if (response.status === 200) {
         setTeams(response.data.result);
         setError("");

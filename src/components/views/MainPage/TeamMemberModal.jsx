@@ -212,7 +212,9 @@ function TeamMemberModal({ show, onHide, teamId }) {
             ))}
           </tbody>
         </table>
+
         {currentUserRole !== "customer" && (
+
           <InputGroup className="mt-3 invite-group">
             <FormControl
               placeholder="Username to invite"
@@ -240,6 +242,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
         )}
       </Modal.Body>
       <Modal.Footer>
+
         {currentUserRole === "owner" && (
           <Button variant="danger" onClick={confirmDelete}>
             팀 삭제하기
