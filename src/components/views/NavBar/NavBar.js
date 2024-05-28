@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Nav } from "react-bootstrap";
-import { FaDropbox } from "react-icons/fa";
+import { FaDropbox, FaCrown, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
@@ -15,35 +15,36 @@ const NavBar = () => {
   const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
-    fetchTeams();
-  }, []);
+
+    if (isLoggedIn) {
+      fetchTeams();
+    }
+  }, [isLoggedIn]);
 
   const fetchTeams = async () => {
-    const userName = user.userName;
-    const token = user.token;
-
-    if (!isLoggedIn) {
-      setError("User not authenticated.");
-      return;
-    }
+    const { token } = user;
 
     try {
-      const response = await axios.get(`${API_SERVER}/teams/list/${userName}`, {
+      const response = await axios.get(`${API_SERVER}/teams/list`, {
+
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
 
-      if (response.status === 200 && response.data) {
-        setTeams(response.data);
+      if (response.status === 200) {
+        setTeams(response.data.result);
         setError("");
       } else {
-        setError("팀 스페이스를 불러오는 데 실패했습니다.");
+        setError("팀 목록을 불러오는 데 실패했습니다.");
+      }
+      if (response.data.result.length === 0) {
+        setError("소속된 팀 스페이스가 없습니다.");
       }
     } catch (error) {
-      console.error("Error fetching teams:", error);
-      setError("An error occurred while fetching team spaces.");
+      console.error(error);
+      setError("팀 스페이스를 불러오는 데 실패했습니다.");
     }
   };
 
@@ -119,13 +120,13 @@ const NavBar = () => {
             {teams.length > 0 ? (
               teams.map((team) => (
                 <Nav.Link
-                  key={team.teamId}
+                  key={team.team.teamId}
                   as={Link}
-                  to={`/team/${team.teamId}`}
+                  to={`/team/${team.team.teamId}`}
                   style={{ ...styles.link, ...styles.subItem }}
                   onClick={handleTeamLinkClick}
                 >
-                  {team.teamName}
+                  {team.team.teamName}
                 </Nav.Link>
               ))
             ) : (
