@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { checkedState } from "../../../recoil/atom";
 import { Button, Form, Modal, Pagination } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
-import { client, createFile, deleteFile, downloadFile, updateFileName, fetchFiles } from "../../../services/fileCRUD";
+import { useLocation, useParams } from "react-router-dom";
+import { createFile, deleteFile, downloadFile, updateFileName, fetchFiles } from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
 
 function MainPage() {
@@ -21,6 +21,9 @@ function MainPage() {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [curDir, setCurDir] = useState("/");
   const location = useLocation();
+
+  const { teamid } = useParams();
+  console.log(teamid);
 
   const isTeamPage = () => {
     return location.pathname.startsWith("/team/");

@@ -1,13 +1,7 @@
 import axios from "axios";
 
-// const accessToken = localStorage.getItem('access_Token')
-const accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4YTU1YWZhOC0xZTZiLTQ3MTctYjE0ZS02ZGQ4ZmY0NGJlYWUiLCJpc3MiOiJkZW1vIGFwcCIsImlhdCI6MTcxNjk0OTA2MCwiZXhwIjoxNzE3MDM1NDYwfQ.EVLNweOWJRQkMC7YqDVBrb85LuwLzEyFmzhm3t9487Vu-ump3uKG-4qDKyC0fTjsVrzZYpRj5ZrQbUv9-2nBng"
-
 export const client = axios.create({
-  baseURL: 'http://182.218.159.76:8080/',
-  headers: {
-    'Authorization': `Bearer ${accessToken}`
-  }
+  baseURL: 'http://182.218.159.76:8080/'
 })
 
 export const createFile = async (fileName, file) => {
@@ -15,7 +9,8 @@ export const createFile = async (fileName, file) => {
     console.log('sending api...');
     const response = await client.post('files/get-upload-url', {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     }
   )
@@ -29,7 +24,11 @@ export const createFile = async (fileName, file) => {
 
 export const deleteFile = async (id) => {
   try{
-    const response = await client.post(`files/delete/${id}`)
+    const response = await client.post(`files/delete/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -44,6 +43,10 @@ export const updateFileName = async (id, newname) => {
       {
         'id': id,
         'fileName': newname
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       }
     )
     console.log(response.data);
@@ -61,7 +64,11 @@ export const downloadFile = async (id) => {
 
 export const fetchFiles = async (page = 0, order = 'null', sort = 'DESC') => {
   try{
-    const response = await client.get(`files/list?page=${page}&order=${order}&sort=${sort}`)
+    const response = await client.get(`files/list?page=${page}&order=${order}&sort=${sort}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
     console.log(response.data.result);
     return response.data.result
   } catch (error) {
