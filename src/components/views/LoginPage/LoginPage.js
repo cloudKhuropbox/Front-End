@@ -1,99 +1,111 @@
 import React, { useState } from "react";
 import "./style.css";
 import { FaDropbox } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { API_SERVER } from "../../../config/apiConfig";
+import { useSetRecoilState } from "recoil";
+import { userState, isLoggedInState } from "../../../recoil/userAtom";
 
 function LoginPage() {
-  // State variables for email, password, and error messages
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const setUser = useSetRecoilState(userState);
+  const setIsLoggedInState = useSetRecoilState(isLoggedInState);
 
-  // Function to handle form submission
-  const handleLogin = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset previous error messages
-    setEmailError("");
+    setUsernameError("");
     setPasswordError("");
 
-    // Check if email is empty
-    if (!email) {
-      setEmailError("*Email is required");
+    if (!username) {
+      setUsernameError("*Username is required");
     }
 
-    // Check if password is empty
     if (!password) {
       setPasswordError("*Password is required");
     }
 
-    // Proceed with login logic if both email and password are provided
-    if (email && password) {
-      console.log("email", email);
-      console.log("password", password);
+    if (username && password) {
+      const req = { username, password };
+
+      try {
+        const response = await axios.post(`${API_SERVER}/auth/signin`, req, {
+          headers: { "Content-Type": "application/json" },
+        });
+        if (response.status === 200) {
+          alert("로그인에 성공했습니다.");
+          const { id, username, token } = response.data;
+
+          localStorage.setItem("userId", id);
+          localStorage.setItem("userName", username);
+          localStorage.setItem("token", token);
+
+          setUser({ userId: id, userName: username, token: token });
+          setIsLoggedInState(true);
+
+          navigate("/personal");
+        }
+      } catch (error) {
+        alert("문제가 발생했습니다. 다시 시도해주세요.");
+        console.error("Error:", error);
+      }
     }
   };
 
   return (
     <div className="login template d-flex justify-content-center align-items-center vh-100 bg-white">
       <div className="form_container p-5 rounded bg-white">
-        <div className="dropbox-icon-container">
+        <div className="dropbox-icon-container mb-4">
           <FaDropbox className="dropbox-icon" size={100} />
           <h2 className="logo-text">KHUropbox</h2>
         </div>
-        <form onSubmit={handleLogin}>
-          {" "}
-          {/* Added onSubmit event handler */}
-          <h3 className="text-center">Login</h3>
-          <div className="mb-2">
-            <label htmlFor="email">Email</label>
+        {error && (
+          <p
+            className="text-danger text-center mb-3"
+            style={{ fontSize: "1.2rem" }}
+          >
+            {error}
+          </p>
+        )}
+        <form onSubmit={handleSubmit}>
+          <h3 className="text-center mb-4">Login</h3>
+          <div className="mb-3">
             <input
-              type="email"
-              placeholder="Email"
+              type="text"
+              placeholder="닉네임"
               className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-            {emailError && <div className="text-danger">{emailError}</div>}{" "}
-            {/* Display email error message */}
+            {usernameError && <p className="text-danger">{usernameError}</p>}
           </div>
-          <div className="mb-2">
-            <label htmlFor="password">Password</label>
+          <div className="mb-3">
             <input
               type="password"
-              placeholder="Password"
+              placeholder="비밀번호"
               className="form-control"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {passwordError && (
-              <div className="text-danger">{passwordError}</div>
-            )}{" "}
-            {/* Display password error message */}
-          </div>
-          <div className="mb-2">
-            <input
-              type="checkbox"
-              className="custom-control custom-checbox"
-              id="check"
-            />
-            <label htmlFor="check" className="custom-input-label ms-2">
-              Remember me
-            </label>
-          </div>
-          <div className="d-grid">
-            <button type="submit" className="btn btn-primary">
-              Login
-            </button>{" "}
-            {/* Added type="submit" */}
+            {passwordError && <p className="text-danger">{passwordError}</p>}
           </div>
           <p className="text-end mt-2">
-            <a href="">Forgot Password?</a>
+            아직 회원이 아니신가요?
             <Link to="/signup" className="ms-2">
-              Sign up
+              회원가입
             </Link>
           </p>
+          <div className="d-grid mb-3">
+            <button type="submit" className="btn btn-primary">
+              로그인
+            </button>
+          </div>
         </form>
       </div>
     </div>

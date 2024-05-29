@@ -7,10 +7,10 @@ import { checkedState } from "../../../recoil/atom";
 import { Button, Form, Modal, Pagination } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { client, createFile, deleteFile, downloadFile, updateFileName, fetchFiles } from "../../../services/fileCRUD";
-
-import extern_files from './files.json'
+import TeamMemberModal from "./TeamMemberModal";
 
 function MainPage() {
+  const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [curPage, setCurPage] = useState(0);
@@ -120,11 +120,20 @@ function MainPage() {
     (loadFiles())();
   }, [curPage])
 
+  const teamId = location.pathname.split("/")[2];
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <ActionBar>
         {isTeamPage() && (
-          <ActionBtn variant="outline-primary">팀원초대</ActionBtn>
+          <>
+            <ActionBtn variant="outline-primary" onClick={handleShowModal}>
+              팀스페이스 관리
+            </ActionBtn>
+          </>
         )}
         {Boolean(checked.length) && <ActionBtn variant="outline-primary">공유</ActionBtn>}
         <ActionBtn variant="outline-secondary" onClick={handleClickUpload}>업로드</ActionBtn>
@@ -171,6 +180,11 @@ function MainPage() {
       <PaginationWrapper>
         <Pagination size="lg">{items}</Pagination>
       </PaginationWrapper>
+      <TeamMemberModal
+        show={showModal}
+        onHide={handleCloseModal}
+        teamId={teamId}
+      />
     </div>
   );
 
