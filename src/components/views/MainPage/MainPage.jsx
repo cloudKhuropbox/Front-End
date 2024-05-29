@@ -4,15 +4,19 @@ import FileItem from "./FileItem";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { checkedState } from "../../../recoil/atom";
-import { Button, Form, Modal, Pagination } from "react-bootstrap";
+import { Button, Dropdown, DropdownButton, Form, Modal, Pagination } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import { createFile, deleteFile, downloadFile, updateFileName, fetchFiles } from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDownWideShort, faArrowUpWideShort } from "@fortawesome/free-solid-svg-icons";
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
+  const [order, setOrder] = useState('이름')
+  const [sort, setSort] = useState(true)
   const [curPage, setCurPage] = useState(0);
   const [totalPage, setTotalPage] = useState(5);
   const [files, setFiles] = useState([]);
@@ -32,8 +36,7 @@ function MainPage() {
   function loadFiles() {
     return async () => {
       try {
-        const res = await fetchFiles(curPage);
-        console.log(res);
+        const res = await fetchFiles(curPage, order, sort);
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
@@ -121,7 +124,7 @@ function MainPage() {
 
   useEffect(() => {
     (loadFiles())();
-  }, [curPage])
+  }, [curPage, order, sort])
 
   const teamId = location.pathname.split("/")[2];
 
@@ -171,9 +174,24 @@ function MainPage() {
           </Modal.Footer>
         </Modal>
       </ActionBar>
-      <div style={{ display: "flex", width: "100%", height: "50px" }}>
+      <BrowseHeader>
         <CurDir>{curDir === "/" ? "모든 파일" : curDir}</CurDir>
-      </div>
+        <SortBar>
+          <Sort onClick={(e) => {
+            e.preventDefault();
+            setSort(!sort)
+          }}>
+            <FontAwesomeIcon style={{marginRight: '10px'}} icon={sort ? faArrowDownWideShort : faArrowUpWideShort} size="lg"></FontAwesomeIcon>
+            <div>{order}</div>
+          </Sort>
+          <DropdownButton id="dropdown-button-drop-down" variant="secondary" size="sm" title="정렬 기준">
+            <Dropdown.Item onClick={(e) => setOrder('최신')}>최신순</Dropdown.Item>
+            <Dropdown.Item onClick={(e) => setOrder('이름')}>이름순</Dropdown.Item>
+            <Dropdown.Item onClick={(e) => setOrder('크기')}>크기순</Dropdown.Item>
+            <Dropdown.Item onClick={(e) => setOrder('형식')}>형식순</Dropdown.Item>
+          </DropdownButton>
+        </SortBar>
+      </BrowseHeader>
       <ItemsContainer>
         {files.map((file) => {
           return (
@@ -199,10 +217,22 @@ export default MainPage;
 const ActionBar = styled.div`
   display: flex;
   margin-bottom: 16px;
+  margin-left: 20px;
 `;
 const ActionBtn = styled(Button)`
   margin-right: 8px;
 `;
+
+const BrowseHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100px;
+
+  margin: 0px 20px 20px 20px;
+
+  padding-bottom: 5px;
+  border-bottom: 1px solid black;
+`
 
 const CurDir = styled.div`
   font-size: 30px;
@@ -219,4 +249,16 @@ const PaginationWrapper = styled.div`
   justify-content: center;
   
   margin-top: 20px;
+`
+
+const SortBar = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const Sort = styled.div`
+  display: flex;
+  width: 100px;
+
+  cursor: pointer;
 `

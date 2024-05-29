@@ -66,7 +66,7 @@ export default function FileItem({ file }) {
       <InfoWrap>
         <Title>{file.fileName}</Title>
         <Info>
-          {file.fileType} - {file.fileSize} B
+          {file.fileType} - {Math.floor(file.fileSize/10000)/100} MB
         </Info>
       </InfoWrap>
     </ItemContainer>
