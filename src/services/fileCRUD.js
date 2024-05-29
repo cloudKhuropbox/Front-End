@@ -62,9 +62,26 @@ export const downloadFile = async (id) => {
   //fetch로 다운로드
 }
 
-export const fetchFiles = async (page = 0, order = 'null', sort = 'DESC') => {
+export const fetchFiles = async (page = 0, order = 'null', sort = true) => {
+  let orderby = ''
+  switch (order) {
+    case "최신":
+      orderby = ''
+      break
+    case "이름":
+      orderby = 'fileName'
+      break
+    case "크기":
+      orderby = 'fileSize'
+      break
+    case "형식":
+      orderby = 'fileType'
+      break
+    default:
+      orderby = ''
+  }
   try{
-    const response = await client.get(`files/list?page=${page}&order=${order}&sort=${sort}`, {
+    const response = await client.get(`files/list?page=${page}&orderBy=${orderby}&sort=${sort ? 'DESC' : 'ASC'}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
