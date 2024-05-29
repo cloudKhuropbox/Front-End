@@ -15,6 +15,7 @@ function MainPage() {
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const [order, setOrder] = useState('이름')
   const [sort, setSort] = useState(true)
   const [curPage, setCurPage] = useState(0);
@@ -90,6 +91,15 @@ function MainPage() {
       //선택한 파일의 이름 상태로 set
     }
   const handleCloseUpdate = () => setShowUpdate(false);
+
+  const handleShowComments = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    console.log('double clicked');
+    setShowComments(true)
+  }
+
+  const handleCloseComments = () => setShowComments(false)
 
   const updateFile = async () => {
     if (checked.length === 1){
@@ -195,7 +205,7 @@ function MainPage() {
       <ItemsContainer>
         {files.map((file) => {
           return (
-          <FileItem key={file.id} file={file}/>)
+          <FileItem key={file.id} file={file} setShowComments={setShowComments}/>)
         })}
       </ItemsContainer>
       <PaginationWrapper>
@@ -206,6 +216,17 @@ function MainPage() {
         onHide={handleCloseModal}
         teamId={teamId}
       />
+
+      {/* 댓글 모달 창 */}
+      <Modal show={showComments} onHide={handleCloseComments}>
+      <Modal.Header>
+          <Modal.Title>댓글</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          </Modal.Body>
+          <Modal.Footer>
+          </Modal.Footer>
+      </Modal>
     </div>
   );
 

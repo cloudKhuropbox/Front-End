@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components'
 import { checkedState } from '../../../recoil/atom';
 
-export default function FileItem({ file }) {
+export default function FileItem({ file, setShowComments }) {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [isCheck, setIsCheck] = useState(false);
 
@@ -40,6 +40,9 @@ export default function FileItem({ file }) {
     <ItemContainer onClick={(e) => {
       setChecked([file])
       setIsCheck(true)
+    }} onDoubleClick={(e) => {
+      console.log('double clicked');
+      setShowComments(true)
     }}>
       <Hover>
         

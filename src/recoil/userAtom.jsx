@@ -18,6 +18,6 @@ export const userState = atom({
 
 export const isLoggedInState = atom({
   key: "isLoggedInState",
-  default: localStorage.getItem("token") ? true : false,
+  default: true,
   effects_UNSTABLE: [persistAtom],
 });
