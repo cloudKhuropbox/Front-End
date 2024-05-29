@@ -1,16 +1,16 @@
-import { faCheck, faFileExcel, faFolder, faImage, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faFileExcel, faFilePdf, faFileZipper, faFolder, faImage, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components'
 import { checkedState } from '../../../recoil/atom';
 
-export default function FileItem({ id, type, name, kind, size }) {
+export default function FileItem({ file }) {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [isCheck, setIsCheck] = useState(false);
 
   let icon;
-  switch (type){
+  switch (file.fileType){
     case "folder":
       icon = faFolder
       break
@@ -20,18 +20,25 @@ export default function FileItem({ id, type, name, kind, size }) {
     case "excel":
       icon = faFileExcel
       break
+    case "pdf":
+      icon = faFilePdf
+      break
+    case "zip":
+    case "7z":
+      icon = faFileZipper
+      break
     default:
       icon = faQuestion
   }
 
   useEffect(()=>{
-    if (checked.indexOf(id) == -1)
+    if (!checked.includes(file))
       setIsCheck(false)
   }, [checked])
 
   return (
     <ItemContainer onClick={(e) => {
-      setChecked([id])
+      setChecked([file])
       setIsCheck(true)
     }}>
       <Hover>
@@ -42,13 +49,13 @@ export default function FileItem({ id, type, name, kind, size }) {
           e.stopPropagation()
           if(isCheck)
             {
-              const newChecked = checked.filter((_id) => _id !== id)
+              const newChecked = checked.filter((_file) => _file !== file)
               setChecked(newChecked)
               setIsCheck(false)
             }
           else
             {
-              setChecked((prev) => [...prev, id])
+              setChecked((prev) => [...prev, file])
               setIsCheck(true)
             }
         }}>
@@ -57,9 +64,9 @@ export default function FileItem({ id, type, name, kind, size }) {
         <Icon icon={icon} style={{color: "A1C9F7"}}></Icon>
       </IconWrap>
       <InfoWrap>
-        <Title>파일 제목{name}</Title>
+        <Title>{file.fileName}</Title>
         <Info>
-          파일 종류{kind} - 사이즈{size} KB
+          {file.fileType} - {file.fileSize} B
         </Info>
       </InfoWrap>
     </ItemContainer>
@@ -74,7 +81,7 @@ const Hover = styled.div`
 
 const CheckBox = styled.div`
   position: absolute;
-  left: 15px;
+  left: 40px;
   top: 15px;
 
   width: 20px;
@@ -91,7 +98,9 @@ const CheckBox = styled.div`
 const ItemContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 230px;
+  flex-wrap: wrap;
+  align-content: center;
+  width: 20%;
   height: 298px;
   margin-bottom: 10px;
 

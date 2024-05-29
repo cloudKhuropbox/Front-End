@@ -1,35 +1,26 @@
 import axios from "axios";
 
 // const accessToken = localStorage.getItem('access_Token')
-const accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4YTU1YWZhOC0xZTZiLTQ3MTctYjE0ZS02ZGQ4ZmY0NGJlYWUiLCJpc3MiOiJkZW1vIGFwcCIsImlhdCI6MTcxNTczNzc4MCwiZXhwIjoxNzE1ODI0MTgwfQ.I6YGcTCUFIvkmcvVsJvuqSkyLZ98wtyaFq4IEokoBZ3NnZ0bLFmyrHfmEsYcVPx3OHYzqZOhSOiaOXx-Mw7CCg"
+const accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4YTU1YWZhOC0xZTZiLTQ3MTctYjE0ZS02ZGQ4ZmY0NGJlYWUiLCJpc3MiOiJkZW1vIGFwcCIsImlhdCI6MTcxNjk0OTA2MCwiZXhwIjoxNzE3MDM1NDYwfQ.EVLNweOWJRQkMC7YqDVBrb85LuwLzEyFmzhm3t9487Vu-ump3uKG-4qDKyC0fTjsVrzZYpRj5ZrQbUv9-2nBng"
 
 export const client = axios.create({
-  baseURL: 'http://182.218.159.76:8081/',
+  baseURL: 'http://182.218.159.76:8080/',
   headers: {
     'Authorization': `Bearer ${accessToken}`
   }
 })
 
 export const createFile = async (fileName, file) => {
-  const formData = new FormData();
-  formData.append("fileName", fileName)
-  formData.append("file", file)
-  for (let key of formData.keys()){
-    console.log(key);
-  }
-  for (let value of formData.values()){
-    console.log(value);
-  }
   try{
     console.log('sending api...');
-    const response = await client.post('files/upload', formData, {
+    const response = await client.post('files/get-upload-url', {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }
   )
-    console.log(response.data.result);
-    return response.data.result;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.log(error)
     throw error
@@ -39,15 +30,15 @@ export const createFile = async (fileName, file) => {
 export const deleteFile = async (id) => {
   try{
     const response = await client.post(`files/delete/${id}`)
-    console.log(response.data.result);
-    return response.data.result;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.log(error)
     throw error
   }
 }
 
-export const updateFile = async (id, newname) => {
+export const updateFileName = async (id, newname) => {
   try{
     const response = await client.post(`files/update`,
       {
@@ -55,8 +46,8 @@ export const updateFile = async (id, newname) => {
         'fileName': newname
       }
     )
-    console.log(response.data.result);
-    return response.data.result;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.log(error)
     throw error
@@ -68,9 +59,9 @@ export const downloadFile = async (id) => {
   //fetch로 다운로드
 }
 
-export const loadFiles = async (opt = null) => {
+export const fetchFiles = async (page = 0, order = 'null', sort = 'DESC') => {
   try{
-    const response = await client.get(`files/list/${opt}`)
+    const response = await client.get(`files/list?page=${page}&order=${order}&sort=${sort}`)
     console.log(response.data.result);
     return response.data.result
   } catch (error) {
