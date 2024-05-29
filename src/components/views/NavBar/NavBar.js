@@ -30,6 +30,7 @@ const NavBar = () => {
           "Content-Type": "application/json",
         },
       });
+
       if (response.status === 200) {
         setTeams(response.data.result);
         setError("");
