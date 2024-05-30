@@ -12,19 +12,28 @@ import {
   Modal,
   Pagination,
 } from "react-bootstrap";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import {
   createFile,
   deleteFile,
   downloadFile,
   updateFileName,
   fetchFiles,
+  restoreFile,
+  deleteFilePermanently,
 } from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownWideShort,
   faArrowUpWideShort,
+  faUpload,
+  faDownload,
+  faEdit,
+  faTrash,
+  faTrashRestore,
+  faUsers,
+  faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 function MainPage() {
@@ -41,18 +50,21 @@ function MainPage() {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [curDir, setCurDir] = useState("/");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { teamid } = useParams();
-  console.log(teamid);
 
   const isTeamPage = () => {
     return location.pathname.startsWith("/team/");
+  };
+  const isRecycleBinPage = () => {
+    return location.pathname.endsWith("/recycle-bin");
   };
 
   function loadFiles() {
     return async () => {
       try {
-        const res = await fetchFiles(curPage, order, sort);
+        const res = await fetchFiles(curPage, order, sort, isRecycleBinPage());
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
@@ -86,8 +98,9 @@ function MainPage() {
   const handleCloseDelete = () => setShowDelete(false);
 
   const deleteFiles = () => {
+    const deleteFn = isRecycleBinPage() ? deleteFilePermanently : deleteFile;
     checked.forEach((file) => {
-      deleteFile(file.id).then(() => {
+      deleteFn(file.id).then(() => {
         setShowDelete(false);
         loadFiles()();
         setChecked([]);
@@ -124,6 +137,15 @@ function MainPage() {
     };
   };
 
+  const handleRestore = () => {
+    checked.forEach((file) => {
+      restoreFile(file.id).then(() => {
+        loadFiles()();
+        setChecked([]);
+      });
+    });
+  };
+
   let items = [];
   for (
     let number = curPage - 1;
@@ -145,48 +167,66 @@ function MainPage() {
 
   useEffect(() => {
     loadFiles()();
-  }, [curPage, order, sort]);
+  }, [curPage, order, sort, location.pathname]);
 
   const teamId = location.pathname.split("/")[2];
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+  const handleRecycleBin = () => {
+    navigate(
+      isRecycleBinPage()
+        ? `/team/${teamid}`
+        : `${location.pathname}/recycle-bin`
+    );
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <ActionBar>
-        {isTeamPage() && (
+        {isTeamPage() && !isRecycleBinPage() && (
           <>
             <ActionBtn variant="outline-primary" onClick={handleShowModal}>
-              팀스페이스 관리
+              <FontAwesomeIcon icon={faUsers} /> 팀스페이스 관리
             </ActionBtn>
           </>
         )}
-        {Boolean(checked.length) && (
-          <ActionBtn variant="outline-primary">공유</ActionBtn>
+        {Boolean(checked.length) && !isRecycleBinPage() && (
+          <ActionBtn variant="outline-primary">
+            <FontAwesomeIcon icon={faShareAlt} /> 공유
+          </ActionBtn>
         )}
-        <ActionBtn variant="outline-secondary" onClick={handleClickUpload}>
-          업로드
-        </ActionBtn>
+        {!isRecycleBinPage() && (
+          <ActionBtn variant="outline-secondary" onClick={handleClickUpload}>
+            <FontAwesomeIcon icon={faUpload} /> 업로드
+          </ActionBtn>
+        )}
+
         <input
           style={{ display: "none" }}
           type="file"
           ref={fileInputRef}
           onChange={uploadFile}
         ></input>
-        {Boolean(checked.length) && (
+        {Boolean(checked.length) && !isRecycleBinPage() && (
           <ActionBtn variant="outline-secondary" onClick={downloadFiles}>
-            다운로드
+            <FontAwesomeIcon icon={faDownload} /> 다운로드
+          </ActionBtn>
+        )}
+        {checked.length === 1 && !isRecycleBinPage() && (
+          <ActionBtn variant="outline-secondary" onClick={handleShowUpdate}>
+            <FontAwesomeIcon icon={faEdit} /> 이름 변경
+          </ActionBtn>
+        )}
+        {isRecycleBinPage() && (
+          <ActionBtn variant="outline-primary" onClick={handleRestore}>
+            <FontAwesomeIcon icon={faTrashRestore} /> 복원하기
           </ActionBtn>
         )}
         {Boolean(checked.length) && (
-          <ActionBtn variant="outline-secondary" onClick={handleShowDelete}>
-            삭제
-          </ActionBtn>
-        )}
-        {checked.length === 1 && (
-          <ActionBtn variant="outline-secondary" onClick={handleShowUpdate}>
-            이름 변경
+          <ActionBtn variant="outline-danger" onClick={handleShowDelete}>
+            <FontAwesomeIcon icon={faTrash} />{" "}
+            {isRecycleBinPage() ? "완전히 삭제" : "삭제"}
           </ActionBtn>
         )}
         <Modal show={showDelete} onHide={handleCloseDelete}>
@@ -194,7 +234,8 @@ function MainPage() {
             <Modal.Title>정말로 삭제하시겠습니까?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Khuropbox에 있는 {checked.length}개 항목을 삭제하시겠어요?
+            {checked.length}개 항목을{" "}
+            {isRecycleBinPage() ? "완전히 삭제하시겠어요?" : "삭제하시겠어요?"}
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -244,7 +285,7 @@ function MainPage() {
         </Modal>
       </ActionBar>
       <BrowseHeader>
-        <CurDir>{curDir === "/" ? "모든 파일" : curDir}</CurDir>
+        <CurDir>{isRecycleBinPage() ? "휴지통" : "모든 파일"}</CurDir>
         <SortBar>
           <Sort
             onClick={(e) => {
@@ -278,6 +319,13 @@ function MainPage() {
               형식순
             </Dropdown.Item>
           </DropdownButton>
+          <RecycleBinButton
+            onClick={handleRecycleBin}
+            variant="outline-secondary"
+            size="sm"
+          >
+            {isRecycleBinPage() ? "모든 파일 보러가기" : "삭제한 파일 보러가기"}
+          </RecycleBinButton>
         </SortBar>
       </BrowseHeader>
       <ItemsContainer>
@@ -344,6 +392,12 @@ const SortBar = styled.div`
 const Sort = styled.div`
   display: flex;
   width: 100px;
-
   cursor: pointer;
+`;
+
+const RecycleBinButton = styled(Button)`
+  margin-left: 10px;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
