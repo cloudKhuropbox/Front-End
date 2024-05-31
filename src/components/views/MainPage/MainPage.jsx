@@ -28,7 +28,7 @@ function MainPage() {
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryTerm);
 
   const { teamid } = useParams();
-  console.log(teamid);
+  console.log('teamid: ', teamid);
 
   const isTeamPage = () => {
     return location.pathname.startsWith("/team/");
@@ -52,10 +52,9 @@ function MainPage() {
   }
 
   const uploadFile = (e) => {
-    const fileName = e.target.files[0].name;
-    const file = URL.createObjectURL(e.target.files[0]);
-    
-    createFile(fileName, file)
+    Array.from(e.target.files).forEach((file, idx) => {
+      createFile(file, idx);
+    })
   }
 
   const downloadFiles = () => {
@@ -144,7 +143,7 @@ function MainPage() {
         )}
         {Boolean(checked.length) && <ActionBtn variant="outline-primary">공유</ActionBtn>}
         <ActionBtn variant="outline-secondary" onClick={handleClickUpload}>업로드</ActionBtn>
-        <input style={{display: 'none'}} type="file" ref={fileInputRef} onChange={uploadFile}></input>
+        <input style={{display: 'none'}} type="file" multiple ref={fileInputRef} onChange={uploadFile}></input>
         {Boolean(checked.length) && <ActionBtn variant="outline-secondary" onClick={downloadFiles}>다운로드</ActionBtn>}
         {Boolean(checked.length) && <ActionBtn variant="outline-secondary" onClick={handleShowDelete}>삭제</ActionBtn>}
         {checked.length===1 && <ActionBtn variant="outline-secondary" onClick={handleShowUpdate}>이름 변경</ActionBtn>}
