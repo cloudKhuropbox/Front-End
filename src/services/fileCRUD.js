@@ -62,7 +62,7 @@ export const downloadFile = async (id) => {
   //fetch로 다운로드
 }
 
-export const fetchFiles = async (page = 0, order = 'null', sort = true) => {
+export const fetchFiles = async (page = 0, order = 'null', sort = true, search='') => {
   let orderby = ''
   switch (order) {
     case "최신":
@@ -81,7 +81,7 @@ export const fetchFiles = async (page = 0, order = 'null', sort = true) => {
       orderby = ''
   }
   try{
-    const response = await client.get(`files/list?page=${page}&orderBy=${orderby}&sort=${sort ? 'DESC' : 'ASC'}`, {
+    const response = await client.get(`files/list?page=${page}&orderBy=${orderby}&sort=${sort ? 'DESC' : 'ASC'}&search=${search}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
