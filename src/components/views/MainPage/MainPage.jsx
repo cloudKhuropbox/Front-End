@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil";
 import { checkedState, searchQueryTerm } from "../../../recoil/atom";
 import { Button, Dropdown, DropdownButton, Form, Modal, Pagination } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
-import { createFile, deleteFile, downloadFile, updateFileName, fetchFiles } from "../../../services/fileCRUD";
+import { createFile, deleteFile, downloadFile, updateFileName, fetchPersonalFiles, fetchTeamFiles } from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownWideShort, faArrowUpWideShort } from "@fortawesome/free-solid-svg-icons";
@@ -28,16 +28,15 @@ function MainPage() {
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryTerm);
 
   const { teamid } = useParams();
-  console.log(teamid);
 
   const isTeamPage = () => {
     return location.pathname.startsWith("/team/");
   };
 
-  function loadFiles() {
+  function loadPersonalFiles() {
     return async () => {
       try {
-        const res = await fetchFiles(curPage, order, sort, searchQuery);
+        const res = await fetchPersonalFiles(curPage, order, sort, searchQuery);
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
@@ -45,6 +44,19 @@ function MainPage() {
         throw err;
       }
     };
+  }
+
+  function loadTeamFiles() {
+    return async () => {
+      try {
+        const res = await fetchTeamFiles(teamid);
+        setFiles(res.content);
+        setTotalPage(res.totalPages)
+      } catch (err) {
+        console.log(err)
+        throw err;
+      }
+    }
   }
 
   const handleClickUpload = () => {
@@ -75,7 +87,7 @@ function MainPage() {
     checked.forEach(file => {
       deleteFile(file.id).then(() => {
         setShowDelete(false);
-        (loadFiles())();
+        (loadPersonalFiles())();
         setChecked([])
       })
     })
@@ -96,7 +108,7 @@ function MainPage() {
     if (checked.length === 1){
       updateFileName(checked[0].id, newName).then((res) => {
         setShowUpdate(false);
-        (loadFiles())();
+        (loadPersonalFiles())();
         setChecked([])
       })
     }
@@ -124,8 +136,8 @@ function MainPage() {
 
 
   useEffect(() => {
-    (loadFiles())();
-  }, [curPage, order, sort, searchQuery])
+    teamid ? (loadTeamFiles())() : (loadPersonalFiles())()
+  }, [curPage, order, sort, searchQuery, teamid])
 
   const teamId = location.pathname.split("/")[2];
 
