@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import FileItem from "./FileItem";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import { checkedState } from "../../../recoil/atom";
+import { checkedState, searchQueryTerm } from "../../../recoil/atom";
 import { Button, Dropdown, DropdownButton, Form, Modal, Pagination } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
 import { createFile, deleteFile, downloadFile, updateFileName, fetchFiles } from "../../../services/fileCRUD";
@@ -25,6 +25,7 @@ function MainPage() {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [curDir, setCurDir] = useState("/");
   const location = useLocation();
+  const [searchQuery, setSearchQuery] = useRecoilState(searchQueryTerm);
 
   const { teamid } = useParams();
   console.log(teamid);
@@ -36,7 +37,7 @@ function MainPage() {
   function loadFiles() {
     return async () => {
       try {
-        const res = await fetchFiles(curPage, order, sort);
+        const res = await fetchFiles(curPage, order, sort, searchQuery);
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
@@ -124,7 +125,7 @@ function MainPage() {
 
   useEffect(() => {
     (loadFiles())();
-  }, [curPage, order, sort])
+  }, [curPage, order, sort, searchQuery])
 
   const teamId = location.pathname.split("/")[2];
 
