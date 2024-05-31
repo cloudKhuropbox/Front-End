@@ -58,8 +58,24 @@ export const updateFileName = async (id, newname) => {
 }
 
 export const downloadFile = async (id) => {
-  //파일 id로 조회한 뒤에
-  //fetch로 다운로드
+  try{
+    //상세정보에서 다운로드 링크 얻기
+    const response = await client.get(`files/info/${id}`,
+      {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    const link = response.data.result.fileLink
+    console.log(link);
+
+    //파일 다운로드
+    const download = await axios.get(link, { responseType: "blob" })
+    console.log(download)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
 }
 
 export const fetchFiles = async (page = 0, order = 'null', sort = true) => {
