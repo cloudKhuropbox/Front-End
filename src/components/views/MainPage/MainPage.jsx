@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import FileItem from "./FileItem";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import { checkedState } from "../../../recoil/atom";
 import {
   Button,
   Dropdown,
@@ -22,6 +21,7 @@ import {
   restoreFile,
   deleteFilePermanently,
 } from "../../../services/fileCRUD";
+import { checkedState, searchQueryTerm } from "../../../recoil/atom";
 import TeamMemberModal from "./TeamMemberModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -50,7 +50,9 @@ function MainPage() {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [curDir, setCurDir] = useState("/");
   const location = useLocation();
+
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useRecoilState(searchQueryTerm);
 
   const { teamid } = useParams();
 
@@ -64,7 +66,7 @@ function MainPage() {
   function loadFiles() {
     return async () => {
       try {
-        const res = await fetchFiles(curPage, order, sort, isRecycleBinPage());
+        const res = await fetchFiles(curPage, order, sort, searchQuery, isRecycleBinPage());
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
@@ -166,8 +168,8 @@ function MainPage() {
   }
 
   useEffect(() => {
-    loadFiles()();
-  }, [curPage, order, sort, location.pathname]);
+    (loadFiles())();
+  }, [curPage, order, sort, searchQuery, location.pathname])
 
   const teamId = location.pathname.split("/")[2];
 

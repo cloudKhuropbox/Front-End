@@ -7,3 +7,8 @@ export const checkedState = atom({
   key: "checkedState",
   default: [],
 })
+
+export const searchQueryTerm = atom({
+  key: "searchQueryTerm",
+  default: '',
+})
