@@ -39,6 +39,8 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/create-team" element={<CreateTeamPage />} />
                 <Route path="*" element={<Navigate to={"/personal"}/>} />
+                <Route path="/personal/recycle-bin" element={<MainPage />} />
+                <Route path="/team/:teamid/recycle-bin" element={<MainPage />} />
               </>
               :
               <>

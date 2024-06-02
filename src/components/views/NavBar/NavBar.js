@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Nav } from "react-bootstrap";
-import { FaDropbox, FaCrown, FaUser } from "react-icons/fa";
+import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
@@ -15,7 +15,6 @@ const NavBar = () => {
   const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
-
     if (isLoggedIn) {
       fetchTeams();
     }
@@ -26,7 +25,6 @@ const NavBar = () => {
 
     try {
       const response = await axios.get(`${API_SERVER}/teams/list`, {
-
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
