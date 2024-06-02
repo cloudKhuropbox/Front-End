@@ -105,8 +105,14 @@ export const downloadFile = async (id) => {
   //fetch로 다운로드
 };
 
-export const fetchFiles = async (page = 0, order = 'null', sort = true, search='', recycleBin = false) => {
-  let orderby = '';
+export const fetchFiles = async (
+  page = 0,
+  order = "null",
+  sort = true,
+  search = "",
+  recycleBin = false
+) => {
+  let orderby = "";
   switch (order) {
     case "최신":
       orderby = "";
@@ -124,16 +130,21 @@ export const fetchFiles = async (page = 0, order = 'null', sort = true, search='
       orderby = "";
   }
 
-  try{
-    const response = await client.get(`files/list?page=${page}&orderBy=${orderby}&sort=${sort ? 'DESC' : 'ASC'}&search=${search}&recycleBin=${recycleBin}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-
+  try {
+    const response = await client.get(
+      `files/list?page=${page}&orderBy=${orderby}&sort=${
+        sort ? "DESC" : "ASC"
+      }&search=${search}&recycleBin=${recycleBin}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       }
     );
     console.log(response.data.result);
     return response.data.result;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
