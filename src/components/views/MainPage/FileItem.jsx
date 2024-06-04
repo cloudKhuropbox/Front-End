@@ -9,7 +9,7 @@ import { checkedState } from '../../../recoil/atom';
 export default function FileItem({ file }) {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [isCheck, setIsCheck] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   let icon;
   switch (file.fileType){
@@ -37,18 +37,20 @@ export default function FileItem({ file }) {
     if (!checked.includes(file))
       setIsCheck(false)
   }, [checked])
-  const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+
+  const handleCloseComments = () => setShowComments(false);
 
   return (
     <ItemContainer onClick={(e) => {
       setChecked([file])
       setIsCheck(true)
+    }} onDoubleClick={(e) => {
+      setShowComments(true)
     }}>
       <Hover>
         
       </Hover>
-      <IconWrap onClick={handleShowModal}>
+      <IconWrap>
         <CheckBox onClick={(e) => {
           e.stopPropagation()
           if(isCheck)
@@ -68,9 +70,10 @@ export default function FileItem({ file }) {
         <Icon icon={icon} style={{color: "A1C9F7"}}></Icon>
       </IconWrap>
       <CommentModal
-    show={showModal}
-    onHide={handleCloseModal}
-    fileId={file.id}></CommentModal>
+        show={showComments}
+        onHide={handleCloseComments}
+        fileId={file.id}>
+      </CommentModal>
       <InfoWrap>
         <Title>{file.fileName}</Title>
         <Info>
