@@ -3,11 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components'
+import CommentModal from './CommentModal';
 import { checkedState } from '../../../recoil/atom';
 
 export default function FileItem({ file }) {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [isCheck, setIsCheck] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   let icon;
   switch (file.fileType){
@@ -35,6 +37,8 @@ export default function FileItem({ file }) {
     if (!checked.includes(file))
       setIsCheck(false)
   }, [checked])
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   return (
     <ItemContainer onClick={(e) => {
@@ -44,7 +48,7 @@ export default function FileItem({ file }) {
       <Hover>
         
       </Hover>
-      <IconWrap>
+      <IconWrap onClick={handleShowModal}>
         <CheckBox onClick={(e) => {
           e.stopPropagation()
           if(isCheck)
@@ -63,6 +67,10 @@ export default function FileItem({ file }) {
         </CheckBox>
         <Icon icon={icon} style={{color: "A1C9F7"}}></Icon>
       </IconWrap>
+      <CommentModal
+    show={showModal}
+    onHide={handleCloseModal}
+    fileId={file.id}></CommentModal>
       <InfoWrap>
         <Title>{file.fileName}</Title>
         <Info>
@@ -70,6 +78,8 @@ export default function FileItem({ file }) {
         </Info>
       </InfoWrap>
     </ItemContainer>
+  
+  
   )
 }
 
