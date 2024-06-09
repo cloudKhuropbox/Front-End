@@ -8,7 +8,7 @@ import "./CommentModal.css"; // Import the CSS file
 
 function CommentModal({ show, onHide, fileId }) {
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
+  const [comment, setComment] = useState("");
   const [editingComment, setEditingComment] = useState(null);
   const [user] = useRecoilState(userState);
   
@@ -41,29 +41,30 @@ function CommentModal({ show, onHide, fileId }) {
   }, [show, fetchComments]);
 
   const handleComment = async () => {
-    if (!newComment) return;
+    if (!comment) return;
     try {
+      console.log({comment});
       await axios.post(
         `${API_SERVER}/comment/create`,
-        { content: newComment },
+        { "fileId": `${fileId}`,
+          comment },
         {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      fetchComments();
-      setNewComment("");
     } catch (error) {
       alert("An error occurred while adding the comment.");
-      setNewComment("");
     }
+    fetchComments()
   };
 
   const handleDeleteComment = async (id) => {
     try {
-      await axios.delete(`${API_SERVER}/comment/delete/${id}`, {
+      await axios.post(`${API_SERVER}/comment/delete/${id}`, {},
+        {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -78,15 +79,15 @@ function CommentModal({ show, onHide, fileId }) {
 
   const handleEditComment = (comment) => {
     setEditingComment(comment);
-    setNewComment(comment.comment);
+    setComment(comment.comment);
   };
 
   const handleUpdateComment = async () => {
     if (!editingComment) return;
     try {
-      await axios.put(
+      await axios.post(
         `${API_SERVER}/comment/update`,
-        { id: editingComment.id, content: newComment },
+        { "id": editingComment.id, comment },
         {
           headers: {
             "Content-Type": "application/json",
@@ -96,7 +97,7 @@ function CommentModal({ show, onHide, fileId }) {
       );
       fetchComments();
       setEditingComment(null);
-      setNewComment("");
+      setComment("");
     } catch (error) {
       alert("An error occurred while updating the comment.");
       console.error(error);
@@ -157,8 +158,8 @@ function CommentModal({ show, onHide, fileId }) {
           <textarea
             id="commentInput"
             placeholder="Add a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
             className="comment-input"
           />
           {editingComment ? (
