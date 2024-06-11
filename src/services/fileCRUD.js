@@ -1,0 +1,110 @@
+import axios from "axios";
+
+export const client = axios.create({
+  baseURL: 'http://182.218.159.76:8080/'
+})
+
+export const createFile = async (fileName, file) => {
+  try{
+    console.log('sending api...');
+    const response = await client.post('files/get-upload-url', {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  )
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const deleteFile = async (id) => {
+  try{
+    const response = await client.post(`files/delete/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const updateFileName = async (id, newname) => {
+  try{
+    const response = await client.post(`files/update`,
+      {
+        'id': id,
+        'fileName': newname
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    )
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const downloadFile = async (id) => {
+  try{
+    //상세정보에서 다운로드 링크 얻기
+    const response = await client.get(`files/info/${id}`,
+      {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    const link = response.data.result.fileLink
+    console.log(link);
+
+    //파일 다운로드
+    const download = await axios.get(link, { responseType: "blob" })
+    console.log(download)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const fetchFiles = async (page = 0, order = 'null', sort = true) => {
+  let orderby = ''
+  switch (order) {
+    case "최신":
+      orderby = ''
+      break
+    case "이름":
+      orderby = 'fileName'
+      break
+    case "크기":
+      orderby = 'fileSize'
+      break
+    case "형식":
+      orderby = 'fileType'
+      break
+    default:
+      orderby = ''
+  }
+  try{
+    const response = await client.get(`files/list?page=${page}&orderBy=${orderby}&sort=${sort ? 'DESC' : 'ASC'}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    console.log(response.data.result);
+    return response.data.result
+  } catch (error) {
+    console.log(error);
+  }
+}
