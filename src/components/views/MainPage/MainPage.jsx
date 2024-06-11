@@ -3,28 +3,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import FileItem from "./FileItem";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import {
-  Button,
-  Dropdown,
-  DropdownButton,
-  Form,
-  Modal,
-  Pagination,
-} from "react-bootstrap";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import {
-  createFile,
-  deleteFile,
-  downloadFile,
-  updateFileName,
-  fetchFiles,
-  restoreFile,
-  deleteFilePermanently,
-} from "../../../services/fileCRUD";
 import { checkedState, searchQueryTerm } from "../../../recoil/atom";
 import { Button, Dropdown, DropdownButton, Form, Modal, Pagination } from "react-bootstrap";
-import { useLocation, useParams } from "react-router-dom";
-import { createFile, deleteFile, downloadFile, updateFileName, fetchPersonalFiles, fetchTeamFiles } from "../../../services/fileCRUD";
+import { createFile, deleteFile, downloadFile, updateFileName, fetchPersonalFiles, fetchTeamFiles, restoreFile, deleteFilePermanently } from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -158,7 +140,7 @@ function MainPage() {
   const handleRestore = () => {
     checked.forEach((file) => {
       restoreFile(file.id).then(() => {
-        loadFiles()();
+        loadPersonalFiles()();
         setChecked([]);
       });
     });

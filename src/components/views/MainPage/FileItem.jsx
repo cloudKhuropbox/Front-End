@@ -81,8 +81,8 @@ const Hover = styled.div`
 
 const CheckBox = styled.div`
   position: absolute;
-  left: 40px;
-  top: 15px;
+  left: 17%;
+  top: 5%;
 
   width: 20px;
   height: 20px;
@@ -101,6 +101,7 @@ const ItemContainer = styled.div`
   flex-wrap: wrap;
   align-content: center;
   width: 20%;
+  padding: 0 2% 0 2%;
   height: 298px;
   margin-bottom: 10px;
 
@@ -115,7 +116,7 @@ const IconWrap = styled.div`
   flex-wrap: wrap;
   z-index: 10;
 
-  width: 230px;
+  width: 100%;
   height: 230px;
   background-color: #F7F5F2;
 
