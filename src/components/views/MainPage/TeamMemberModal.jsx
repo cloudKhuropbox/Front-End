@@ -8,6 +8,7 @@ import {
   FormControl,
   Alert,
   Form,
+  Dropdown,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -159,6 +160,33 @@ function TeamMemberModal({ show, onHide, teamId }) {
     onHide();
   };
 
+  const handleRoleChange = async (userName, newRole) => {
+    try {
+      const response = await axios.post(
+        `${API_SERVER}/teams/updaterole`,
+        {
+          userName,
+          teamId,
+          role: newRole,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        fetchTeamMembers();
+      } else {
+        throw new Error("역할 변경 요청 처리 중 서버에서 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("역할 변경 중 오류가 발생했습니다: " + error.message);
+    }
+  };
+
   return (
     <Modal
       show={show}
@@ -172,24 +200,69 @@ function TeamMemberModal({ show, onHide, teamId }) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <table className="table">
+        <table className="table" style={{ tableLayout: "fixed" }}>
           <thead>
             <tr style={{ fontWeight: "bold" }}>
-              <th>멤버</th>
-              <th>역할</th>
-              <th>멤버 관리</th>
+              <th style={{ width: "33%" }}>멤버</th>
+              <th style={{ width: "33%" }}>역할 관리</th>
+              <th style={{ width: "34%" }}>멤버 관리</th>
             </tr>
           </thead>
           <tbody>
             {members.map((member) => (
-              <tr key={member.user.id}>
+              <tr key={member.user.id} style={{ height: "50px" }}>
                 <td>{member.user.username}</td>
-                <td>
-                  {member.role === "owner"
-                    ? "최고관리자"
-                    : member.role === "admin"
-                    ? "관리자"
-                    : "일반"}
+                <td className="align-items-center">
+                  {member.role === "owner" ? (
+                    "최고관리자"
+                  ) : (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {member.role === "admin" ? "관리자" : "일반"}
+                      {(currentUserRole === "owner" ||
+                        currentUserRole === "admin") &&
+                        member.user.id !== userId && (
+                          <Dropdown
+                            className="ms-2"
+                            style={{ marginLeft: "10px" }}
+                          >
+                            <Dropdown.Toggle
+                              variant="third"
+                              id="dropdown-basic"
+                              size="sm"
+                              className="m-1"
+                            >
+                              변경하기
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="role-dropdown-menu">
+                              {member.role === "admin" && (
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    handleRoleChange(
+                                      member.user.username,
+                                      "customer"
+                                    )
+                                  }
+                                >
+                                  일반
+                                </Dropdown.Item>
+                              )}
+                              {member.role === "customer" && (
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    handleRoleChange(
+                                      member.user.username,
+                                      "admin"
+                                    )
+                                  }
+                                >
+                                  관리자
+                                </Dropdown.Item>
+                              )}
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        )}
+                    </div>
+                  )}
                 </td>
                 <td>
                   {member.user.id === userId && member.role !== "owner" ? (
@@ -198,6 +271,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
                     </Button>
                   ) : (
                     member.user.id !== userId &&
+                    member.role === "customer" &&
                     currentUserRole !== "customer" && (
                       <Button
                         variant="danger"
@@ -212,9 +286,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
             ))}
           </tbody>
         </table>
-
         {currentUserRole !== "customer" && (
-
           <InputGroup className="mt-3 invite-group">
             <FormControl
               placeholder="Username to invite"
@@ -242,7 +314,6 @@ function TeamMemberModal({ show, onHide, teamId }) {
         )}
       </Modal.Body>
       <Modal.Footer>
-
         {currentUserRole === "owner" && (
           <Button variant="danger" onClick={confirmDelete}>
             팀 삭제하기
@@ -271,7 +342,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
               variant="outline-danger"
               style={{ marginRight: "10px" }}
             >
-              삭제
+              삭제하기
             </Button>
             <Button
               onClick={() => setShowDeleteConfirm(false)}
