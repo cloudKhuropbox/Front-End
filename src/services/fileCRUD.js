@@ -4,20 +4,92 @@ export const client = axios.create({
   baseURL: "http://182.218.159.76:8080/",
 });
 
-export const createFile = async (fileName, file) => {
-  try {
-    console.log("sending api...");
-    const response = await client.post("files/get-upload-url", {
+export const createFile = async (file, idx) => {
+  const formData = new FormData()
+  formData.append("key", file.name)
+  formData.append("fileSize", file.size)
+
+  try{
+    //Get upload_url
+    const response = await client.post('files/start-upload', formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    console.log('presigend url: ', response.data)
+
+    const partArray = response.data
+    const nParts = partArray.length
+    
+    const uploadId = (new URL(partArray[0].uploadUrl)).searchParams.get('uploadId');
+
+    const chunkInterval = Math.floor(file.size / nParts)
+    let chunkedStart = 0;
+    let chunkEnd;
+
+    const chunkWithUrlList = partArray.map(({partNumber, uploadUrl}, i) => {
+      if(i === nParts - 1){
+        chunkEnd = file.size
+      } else {
+        chunkEnd = chunkedStart + chunkInterval;
+      }
+
+      const chunk = file.slice(chunkedStart, chunkEnd);
+      chunkedStart = chunkEnd;
+
+      return {
+        uploadUrl,
+        partNumber,
+        chunk
+      }
+    })
+
+    const fulfilledList = [];
+    const rejectedList = [];
+
+    await Promise.allSettled(chunkWithUrlList.map(
+        ({
+            uploadUrl,
+            partNumber,
+            chunk
+        }) => fetch(
+            uploadUrl, {
+                method: 'PUT',
+                body: chunk,
+            }).then((res) => {
+            console.log(`partNumber : ${partNumber} / ETag : ${res.headers.get('ETag')}`)
+            return {
+                partNum: partNumber,
+                etag: res.headers.get('ETag').replace(/"/g, ''),
+            }
+        })
+    )).then((res) => {
+        console.log(`upload result : ${res}`)
+        res.forEach((el) => {
+            if (el.status === 'fulfilled') {
+                fulfilledList.push(el.value);
+                return;
+            }
+
+            rejectedList.push(el.value);
+        });
     });
-    console.log(response.data);
-    return response.data;
+    
+    const completeUpload = await client.post(`files/complete-upload?key=${file.name}&uploadId=${uploadId}`, {
+      fileName: file.name,
+      fileKey: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      parts: [...fulfilledList]
+    }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json"
+      }
+    })
   } catch (error) {
-    console.log(error);
-    throw error;
+    console.error(error)
+    throw error
   }
 };
 

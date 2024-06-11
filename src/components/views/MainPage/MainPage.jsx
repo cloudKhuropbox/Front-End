@@ -81,11 +81,11 @@ function MainPage() {
   };
 
   const uploadFile = (e) => {
-    const fileName = e.target.files[0].name;
-    const file = URL.createObjectURL(e.target.files[0]);
+    Array.from(e.target.files).forEach((file, idx) => {
+      createFile(file, idx);
+    })
+  }
 
-    createFile(fileName, file);
-  };
 
   const downloadFiles = () => {
     checked.forEach((file) => {
