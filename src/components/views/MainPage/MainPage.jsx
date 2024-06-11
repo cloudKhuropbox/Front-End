@@ -22,6 +22,9 @@ import {
   deleteFilePermanently,
 } from "../../../services/fileCRUD";
 import { checkedState, searchQueryTerm } from "../../../recoil/atom";
+import { Button, Dropdown, DropdownButton, Form, Modal, Pagination } from "react-bootstrap";
+import { useLocation, useParams } from "react-router-dom";
+import { createFile, deleteFile, downloadFile, updateFileName, fetchPersonalFiles, fetchTeamFiles } from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -63,10 +66,10 @@ function MainPage() {
     return location.pathname.endsWith("/recycle-bin");
   };
 
-  function loadFiles() {
+  function loadPersonalFiles() {
     return async () => {
       try {
-        const res = await fetchFiles(curPage, order, sort, searchQuery, isRecycleBinPage());
+        const res = await fetchPersonalFiles(curPage, order, sort, searchQuery, isRecycleBinPage());
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
@@ -74,6 +77,19 @@ function MainPage() {
         throw err;
       }
     };
+  }
+
+  function loadTeamFiles() {
+    return async () => {
+      try {
+        const res = await fetchTeamFiles(teamid);
+        setFiles(res.content);
+        setTotalPage(res.totalPages)
+      } catch (err) {
+        console.log(err)
+        throw err;
+      }
+    }
   }
 
   const handleClickUpload = () => {
@@ -104,12 +120,12 @@ function MainPage() {
     checked.forEach((file) => {
       deleteFn(file.id).then(() => {
         setShowDelete(false);
-        loadFiles()();
-        setChecked([]);
-      });
-    });
-    setChecked([]);
-  };
+        (loadPersonalFiles())();
+        setChecked([])
+      })
+    })
+    setChecked([])
+  }
 
   const handleShowUpdate = () => {
     if (Boolean(checked.length)) {
@@ -125,9 +141,9 @@ function MainPage() {
     if (checked.length === 1) {
       updateFileName(checked[0].id, newName).then((res) => {
         setShowUpdate(false);
-        loadFiles()();
-        setChecked([]);
-      });
+        (loadPersonalFiles())();
+        setChecked([])
+      })
     }
   };
 
@@ -168,8 +184,8 @@ function MainPage() {
   }
 
   useEffect(() => {
-    (loadFiles())();
-  }, [curPage, order, sort, searchQuery, location.pathname])
+    teamid ? (loadTeamFiles())() : (loadPersonalFiles())()
+  }, [curPage, order, sort, searchQuery, teamid])
 
   const teamId = location.pathname.split("/")[2];
 
