@@ -181,20 +181,28 @@ export const downloadFile = async (id) => {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
-    const link = response.data.result.fileLink
-    console.log(link);
+    console.log(response);
+    const download_link = `https://khuropbox2.s3.amazonaws.com/${response.data.result.fileKey}`
+    const fileName = response.data.result.fileName
 
     //파일 다운로드
-    const download = await axios.get(link, { responseType: "blob" })
-    console.log(download)
+    const download = await axios.get(download_link, { responseType: "blob" })
+    const url = URL.createObjectURL(new Blob([download.data]))
+    const a = document.createElement('a');
+    a.href = url
+    a.style.display = 'none';
+    a.download = fileName
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
   } catch (error) {
     console.log(error)
     throw error
   }
 }
-  //파일 id로 조회한 뒤에
-  //fetch로 다운로드
-};
 
 export const fetchPersonalFiles = async (page = 0, order = 'null', sort = true, search='', recycleBin = false) => {
   let orderby = ''
