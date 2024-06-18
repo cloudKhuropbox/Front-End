@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import "./App.css";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import NavBar from "./views/NavBar/NavBar";
@@ -7,7 +7,7 @@ import Header from "./views/Header/Header";
 import LoginPage from "./views/LoginPage/LoginPage";
 import SignupPage from "./views/SignupPage/SignupPage";
 import CreateTeamPage from "./views/CreateTeamPage/CreateTeamPage";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { isLoggedInState } from "../recoil/userAtom";
 
 function App() {
@@ -15,7 +15,11 @@ function App() {
   const isLoginPage = location.pathname === "/";
   const isSignupPage = location.pathname === "/signup";
   const isCreateTeamPage = location.pathname === "/create-team";
-  const isLogin = useRecoilValue(isLoggedInState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  
+  useEffect(() => {
+    setIsLoggedIn(false)
+  }, [])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -32,7 +36,7 @@ function App() {
           {!isLoginPage && !isSignupPage && !isCreateTeamPage && <Header />}
           <div style={{ flex: 1, padding: "20px 20px 20px" }}>
             <Routes>
-              {isLogin ? (
+              {isLoggedIn ? (
                 <>
                   <Route path="/personal" element={<MainPage />} />
                   <Route path="/team/:teamid" element={<MainPage />} />

@@ -5,13 +5,12 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
 import { useRecoilValue } from "recoil";
-import { isLoggedInState, userState } from "../../../recoil/userAtom";
+import { isLoggedInState } from "../../../recoil/userAtom";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState("");
-  const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
@@ -21,7 +20,7 @@ const NavBar = () => {
   }, [isLoggedIn]);
 
   const fetchTeams = async () => {
-    const { token } = user;
+    const token = localStorage.getItem('token');
 
     try {
       const response = await axios.get(`${API_SERVER}/teams/list`, {

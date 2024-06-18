@@ -3,13 +3,12 @@ import { Container, Navbar, Form, FormControl } from "react-bootstrap";
 import { FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { isLoggedInState, userState } from "../../../recoil/userAtom";
+import { isLoggedInState } from "../../../recoil/userAtom";
 import { searchQueryTerm } from "../../../recoil/atom";
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  const [user, setUser] = useRecoilState(userState);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
   const [searchQuery, setSearchQuery] = useRecoilState(searchQueryTerm);
 
@@ -35,7 +34,6 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    setUser({ userId: null, userName: null, token: null });
     setIsLoggedIn(false);
     navigate("/");
   };

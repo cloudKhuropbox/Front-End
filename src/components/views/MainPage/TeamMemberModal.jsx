@@ -11,8 +11,6 @@ import {
   Dropdown,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { userState } from "../../../recoil/userAtom";
 import "./TeamMemberModal.css";
 
 function TeamMemberModal({ show, onHide, teamId }) {
@@ -21,12 +19,11 @@ function TeamMemberModal({ show, onHide, teamId }) {
   const [inviteUserName, setInviteUserName] = useState("");
   const [inviteUserRole, setInviteUserRole] = useState("customer");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [user, setUser] = useRecoilState(userState);
 
   const navigate = useNavigate();
 
-  const userId = user.userId;
-  const token = user.token;
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
 
   const fetchTeamMembers = useCallback(async () => {
     try {
