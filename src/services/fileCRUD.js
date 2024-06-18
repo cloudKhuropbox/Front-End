@@ -173,9 +173,36 @@ export const updateFileName = async (id, newname) => {
 };
 
 export const downloadFile = async (id) => {
-  //파일 id로 조회한 뒤에
-  //fetch로 다운로드
-};
+  try{
+    //상세정보에서 다운로드 링크 얻기
+    const response = await client.get(`files/info/${id}`,
+      {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    console.log(response);
+    const download_link = `https://khuropbox2.s3.amazonaws.com/${response.data.result.fileKey}`
+    const fileName = response.data.result.fileName
+
+    //파일 다운로드
+    const download = await axios.get(download_link, { responseType: "blob" })
+    const url = URL.createObjectURL(new Blob([download.data]))
+    const a = document.createElement('a');
+    a.href = url
+    a.style.display = 'none';
+    a.download = fileName
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 export const fetchPersonalFiles = async (page = 0, order = 'null', sort = true, search='', recycleBin = false) => {
   let orderby = ''
