@@ -176,7 +176,11 @@ function MainPage() {
         <Pagination.Item
           key={number}
           active={number === curPage + 1}
-          onClick={clickPage(number)}
+          onClick={(e) => {
+            window.scrollTo(0, 0);
+            e.preventDefault();
+            setCurPage(number-1)
+          }}
         >
           {number}
         </Pagination.Item>
