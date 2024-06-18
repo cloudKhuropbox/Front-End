@@ -141,7 +141,7 @@ const NavBar = () => {
 const styles = {
   navStyle: {
     backgroundColor: "#f7f5f2",
-    height: "100vh",
+    height: "170vh",
     width: "250px",
     fontFamily: "Arial, sans-serif",
     color: "#495057",

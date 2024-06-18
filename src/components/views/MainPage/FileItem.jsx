@@ -14,19 +14,27 @@ export default function FileItem({ file }) {
   let icon;
   switch (file.fileType){
     case "folder":
+    case ".folder":
       icon = faFolder
       break
     case "img":
+    case ".img":
+    case "png":
+    case ".png":
       icon = faImage
       break
     case "excel":
+    case ".excel":
       icon = faFileExcel
       break
     case "pdf":
+    case ".pdf":
       icon = faFilePdf
       break
     case "zip":
+    case ".zip":
     case "7z":
+    case ".7z":
       icon = faFileZipper
       break
     default:
@@ -147,16 +155,19 @@ const Icon = styled(FontAwesomeIcon)`
 `
 
 const InfoWrap = styled.div`
+  width: 100%;
   height: 68px;
   padding: 10px;
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
 `
 
 const Title = styled.div`
-
+  white-space: nowrap;
 `
 
 const Info = styled.div`
+  white-space: nowrap;
 `
