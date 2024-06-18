@@ -84,12 +84,11 @@ function TeamMemberModal({ show, onHide, teamId }) {
     }
   };
 
-  const handleRemove = async (userName) => {
-    console.log(userName, teamId);
+  const handleRemove = async (userName, role) => {
     try {
       await axios.post(
         `${API_SERVER}/teams/exile`,
-        { userName, team: teamId },
+        { userName, team: teamId, role },
         {
           headers: {
             "Content-Type": "application/json",
@@ -100,7 +99,6 @@ function TeamMemberModal({ show, onHide, teamId }) {
       fetchTeamMembers();
     } catch (error) {
       alert("멤버 추방 중 문제가 발생했습니다.");
-      console.log(error);
     }
   };
 
@@ -160,6 +158,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
   };
 
   const handleRoleChange = async (userName, newRole) => {
+    console.log(userName, teamId, newRole);
     try {
       const response = await axios.post(
         `${API_SERVER}/teams/updaterole`,
@@ -176,6 +175,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
         }
       );
       if (response.status === 200) {
+        console.log(response);
         fetchTeamMembers();
       } else {
         throw new Error("역할 변경 요청 처리 중 서버에서 오류가 발생했습니다.");
@@ -280,7 +280,9 @@ function TeamMemberModal({ show, onHide, teamId }) {
                     currentUserRole !== "customer" && (
                       <Button
                         variant="danger"
-                        onClick={() => handleRemove(member.user.username)}
+                        onClick={() =>
+                          handleRemove(member.user.username, member.role)
+                        }
                       >
                         추방하기
                       </Button>
