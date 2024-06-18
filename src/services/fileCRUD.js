@@ -255,3 +255,16 @@ export const fetchTeamFiles = async (teamid) => {
     console.log(error)
   }
 }
+
+export const fetchShareLink = async (fileid) => {
+  try {
+    const response = await client.get(`files/share-file?fileId=${fileid}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    return response.data.result
+  } catch (error) {
+    console.log(error)
+  }
+}

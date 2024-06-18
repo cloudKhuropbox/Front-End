@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { checkedState, searchQueryTerm } from "../../../recoil/atom";
 import { Button, Dropdown, DropdownButton, Form, Modal, Pagination } from "react-bootstrap";
-import { createFile, deleteFile, downloadFile, updateFileName, fetchPersonalFiles, fetchTeamFiles, restoreFile, deleteFilePermanently } from "../../../services/fileCRUD";
+import { createFile, deleteFile, downloadFile, updateFileName, fetchPersonalFiles, fetchTeamFiles, restoreFile, deleteFilePermanently, fetchShareLink } from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,11 +20,13 @@ import {
   faUsers,
   faShareAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 function MainPage() {
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [order, setOrder] = useState("이름");
   const [sort, setSort] = useState(true);
   const [curPage, setCurPage] = useState(0);
@@ -119,6 +121,23 @@ function MainPage() {
   };
   const handleCloseUpdate = () => setShowUpdate(false);
 
+  const [shareLinks, setShareLinks] = useState([])
+  const handleShowShare = () => {
+    if (Boolean(checked.length)) {
+      setShowShare(true);
+
+      checked.forEach((file) => {
+        fetchShareLink(file.id).then((res) => {
+          setShareLinks(prev => [...prev, res])
+        });
+      })
+    }
+  }
+  const handleCloseShare = () => {
+    setShowShare(false);
+    setShareLinks(prev => [])
+  }
+
   const updateFile = async () => {
     if (checked.length === 1) {
       updateFileName(checked[0].id, newName).then((res) => {
@@ -173,6 +192,7 @@ function MainPage() {
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+
   const handleRecycleBin = () => {
     navigate(
       isRecycleBinPage()
@@ -192,7 +212,7 @@ function MainPage() {
           </>
         )}
         {Boolean(checked.length) && !isRecycleBinPage() && (
-          <ActionBtn variant="outline-primary">
+          <ActionBtn variant="outline-primary" onClick={handleShowShare}>
             <FontAwesomeIcon icon={faShareAlt} /> 공유
           </ActionBtn>
         )}
@@ -229,6 +249,7 @@ function MainPage() {
             {isRecycleBinPage() ? "완전히 삭제" : "삭제"}
           </ActionBtn>
         )}
+        {/* Delete Modal */}
         <Modal show={showDelete} onHide={handleCloseDelete}>
           <Modal.Header>
             <Modal.Title>정말로 삭제하시겠습니까?</Modal.Title>
@@ -254,6 +275,7 @@ function MainPage() {
             </Button>
           </Modal.Footer>
         </Modal>
+        {/* Update Modal */}
         <Modal show={showUpdate} onHide={handleCloseUpdate}>
           <Modal.Header>
             <Modal.Title>이름 바꾸기</Modal.Title>
@@ -278,6 +300,46 @@ function MainPage() {
               className="btn_close"
               variant="secondary"
               onClick={handleCloseUpdate}
+            >
+              닫기
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        {/* Share Modal */}
+        <Modal show={showShare} onHide={handleCloseShare}>
+          <Modal.Header>
+            <Modal.Title>공유</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <table className="table" style={{ tableLayout: "fixed" }}>
+          <thead>
+            <tr style={{ fontWeight: "bold" }}>
+              <th style={{ width: "50%" }}>파일명</th>
+              <th style={{ width: "50%" }}>공유 링크</th>
+            </tr>
+          </thead>
+          <tbody>
+            {checked.map((file, idx) => (
+              <tr key={file.id}>
+                <td>{file.fileName}</td>
+                <td>
+                  {shareLinks[idx] ? 
+                  <CopyToClipboard text={shareLinks[idx]} onCopy={() => alert('복사되었습니다.')}>
+                    <ActionBtn>복사하기</ActionBtn>
+                  </CopyToClipboard> : 
+                  <Button>링크 생성 중...</Button>
+                  }
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="btn_close"
+              variant="secondary"
+              onClick={handleCloseShare}
             >
               닫기
             </Button>
