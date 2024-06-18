@@ -1,12 +1,11 @@
 .invite-group .invite-username {
-    flex: 6;
-  }
-  
-  .invite-group .invite-role {
-    flex: 2;
-  }
-  
-  .invite-group .invite-button {
-    flex: 0.9;
-  }
-  
+  flex: 6;
+}
+
+.invite-group .invite-role {
+  flex: 2;
+}
+
+.invite-group .invite-button {
+  flex: 0.9;
+}

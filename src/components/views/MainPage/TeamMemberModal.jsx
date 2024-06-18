@@ -22,8 +22,8 @@ function TeamMemberModal({ show, onHide, teamId }) {
 
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem('userId');
-  const token = localStorage.getItem('token');
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
 
   const fetchTeamMembers = useCallback(async () => {
     try {
@@ -85,6 +85,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
   };
 
   const handleRemove = async (userName) => {
+    console.log(userName, teamId);
     try {
       await axios.post(
         `${API_SERVER}/teams/exile`,
@@ -99,6 +100,7 @@ function TeamMemberModal({ show, onHide, teamId }) {
       fetchTeamMembers();
     } catch (error) {
       alert("멤버 추방 중 문제가 발생했습니다.");
+      console.log(error);
     }
   };
 
@@ -213,7 +215,13 @@ function TeamMemberModal({ show, onHide, teamId }) {
                   {member.role === "owner" ? (
                     "최고관리자"
                   ) : (
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
                       {member.role === "admin" ? "관리자" : "일반"}
                       {(currentUserRole === "owner" ||
                         currentUserRole === "admin") &&

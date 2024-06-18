@@ -5,8 +5,25 @@ import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { checkedState, searchQueryTerm } from "../../../recoil/atom";
-import { Button, Dropdown, DropdownButton, Form, Modal, Pagination } from "react-bootstrap";
-import { createFile, deleteFile, downloadFile, updateFileName, fetchPersonalFiles, fetchTeamFiles, restoreFile, deleteFilePermanently, fetchShareLink } from "../../../services/fileCRUD";
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  Form,
+  Modal,
+  Pagination,
+} from "react-bootstrap";
+import {
+  createFile,
+  deleteFile,
+  downloadFile,
+  updateFileName,
+  fetchPersonalFiles,
+  fetchTeamFiles,
+  restoreFile,
+  deleteFilePermanently,
+  fetchShareLink,
+} from "../../../services/fileCRUD";
 import TeamMemberModal from "./TeamMemberModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -53,7 +70,13 @@ function MainPage() {
   function loadPersonalFiles() {
     return async () => {
       try {
-        const res = await fetchPersonalFiles(curPage, order, sort, searchQuery, isRecycleBinPage());
+        const res = await fetchPersonalFiles(
+          curPage,
+          order,
+          sort,
+          searchQuery,
+          isRecycleBinPage()
+        );
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
@@ -68,12 +91,12 @@ function MainPage() {
       try {
         const res = await fetchTeamFiles(teamid);
         setFiles(res.content);
-        setTotalPage(res.totalPages)
+        setTotalPage(res.totalPages);
       } catch (err) {
-        console.log(err)
+        console.log(err);
         throw err;
       }
-    }
+    };
   }
 
   const handleClickUpload = () => {
@@ -83,9 +106,8 @@ function MainPage() {
   const uploadFile = (e) => {
     Array.from(e.target.files).forEach((file, idx) => {
       createFile(file, idx);
-    })
-  }
-
+    });
+  };
 
   const downloadFiles = () => {
     checked.forEach((file) => {
@@ -104,12 +126,12 @@ function MainPage() {
     checked.forEach((file) => {
       deleteFn(file.id).then(() => {
         setShowDelete(false);
-        (loadPersonalFiles())();
-        setChecked([])
-      })
-    })
-    setChecked([])
-  }
+        loadPersonalFiles()();
+        setChecked([]);
+      });
+    });
+    setChecked([]);
+  };
 
   const handleShowUpdate = () => {
     if (Boolean(checked.length)) {
@@ -121,30 +143,30 @@ function MainPage() {
   };
   const handleCloseUpdate = () => setShowUpdate(false);
 
-  const [shareLinks, setShareLinks] = useState([])
+  const [shareLinks, setShareLinks] = useState([]);
   const handleShowShare = () => {
     if (Boolean(checked.length)) {
       setShowShare(true);
 
       checked.forEach((file) => {
         fetchShareLink(file.id).then((res) => {
-          setShareLinks(prev => [...prev, res])
+          setShareLinks((prev) => [...prev, res]);
         });
-      })
+      });
     }
-  }
+  };
   const handleCloseShare = () => {
     setShowShare(false);
-    setShareLinks(prev => [])
-  }
+    setShareLinks((prev) => []);
+  };
 
   const updateFile = async () => {
     if (checked.length === 1) {
       updateFileName(checked[0].id, newName).then((res) => {
         setShowUpdate(false);
-        (loadPersonalFiles())();
-        setChecked([])
-      })
+        loadPersonalFiles()();
+        setChecked([]);
+      });
     }
   };
 
@@ -179,7 +201,7 @@ function MainPage() {
           onClick={(e) => {
             window.scrollTo(0, 0);
             e.preventDefault();
-            setCurPage(number-1)
+            setCurPage(number - 1);
           }}
         >
           {number}
@@ -189,8 +211,8 @@ function MainPage() {
   }
 
   useEffect(() => {
-    teamid ? (loadTeamFiles())() : (loadPersonalFiles())()
-  }, [curPage, order, sort, searchQuery, teamid])
+    teamid ? loadTeamFiles()() : loadPersonalFiles()();
+  }, [curPage, order, sort, searchQuery, teamid, location.pathname]);
 
   const teamId = location.pathname.split("/")[2];
 
@@ -200,7 +222,7 @@ function MainPage() {
   const handleRecycleBin = () => {
     navigate(
       isRecycleBinPage()
-        ? `/team/${teamid}`
+        ? location.pathname.replace("/recycle-bin", "")
         : `${location.pathname}/recycle-bin`
     );
   };
@@ -315,29 +337,33 @@ function MainPage() {
             <Modal.Title>공유</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <table className="table" style={{ tableLayout: "fixed" }}>
-          <thead>
-            <tr style={{ fontWeight: "bold" }}>
-              <th style={{ width: "50%" }}>파일명</th>
-              <th style={{ width: "50%" }}>공유 링크</th>
-            </tr>
-          </thead>
-          <tbody>
-            {checked.map((file, idx) => (
-              <tr key={file.id}>
-                <td>{file.fileName}</td>
-                <td>
-                  {shareLinks[idx] ? 
-                  <CopyToClipboard text={shareLinks[idx]} onCopy={() => alert('복사되었습니다.')}>
-                    <ActionBtn>복사하기</ActionBtn>
-                  </CopyToClipboard> : 
-                  <Button>링크 생성 중...</Button>
-                  }
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            <table className="table" style={{ tableLayout: "fixed" }}>
+              <thead>
+                <tr style={{ fontWeight: "bold" }}>
+                  <th style={{ width: "50%" }}>파일명</th>
+                  <th style={{ width: "50%" }}>공유 링크</th>
+                </tr>
+              </thead>
+              <tbody>
+                {checked.map((file, idx) => (
+                  <tr key={file.id}>
+                    <td>{file.fileName}</td>
+                    <td>
+                      {shareLinks[idx] ? (
+                        <CopyToClipboard
+                          text={shareLinks[idx]}
+                          onCopy={() => alert("복사되었습니다.")}
+                        >
+                          <ActionBtn>복사하기</ActionBtn>
+                        </CopyToClipboard>
+                      ) : (
+                        <Button>링크 생성 중...</Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </Modal.Body>
           <Modal.Footer>
             <Button
