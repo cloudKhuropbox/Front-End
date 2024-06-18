@@ -258,17 +258,47 @@ export const fetchPersonalFiles = async (
   }
 };
 
-export const fetchTeamFiles = async (teamid) => {
+export const fetchTeamFiles = async (
+  teamid,
+  page = 0,
+  order = "null",
+  sort = true,
+  search = "",
+  recycleBin = false
+) => {
+  let orderby = "";
+  switch (order) {
+    case "최신":
+      orderby = "";
+      break;
+    case "이름":
+      orderby = "fileName";
+      break;
+    case "크기":
+      orderby = "fileSize";
+      break;
+    case "형식":
+      orderby = "fileType";
+      break;
+    default:
+      orderby = "";
+  }
+
   try {
-    const response = await client.get(`teams/filelist/${teamid}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    console.log(response.data.result);
+    const response = await client.get(
+      `teams/filelist/${teamid}?page=${page}&orderBy=${orderby}&sort=${
+        sort ? "DESC" : "ASC"
+      }&search=${search}&recycleBin=${recycleBin}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
     return response.data.result;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 

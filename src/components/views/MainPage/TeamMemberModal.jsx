@@ -158,7 +158,6 @@ function TeamMemberModal({ show, onHide, teamId }) {
   };
 
   const handleRoleChange = async (userName, newRole) => {
-    console.log(userName, teamId, newRole);
     try {
       const response = await axios.post(
         `${API_SERVER}/teams/updaterole`,

@@ -10,8 +10,8 @@ function CommentModal({ show, onHide, fileId }) {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [editingComment, setEditingComment] = useState(null);
-  
-  const token = localStorage.getItem('token');
+
+  const token = localStorage.getItem("token");
 
   const fetchComments = useCallback(async () => {
     try {
@@ -42,33 +42,35 @@ function CommentModal({ show, onHide, fileId }) {
   const handleComment = async () => {
     if (!comment) return;
     try {
-      console.log({comment});
+      console.log({ comment });
       await axios.post(
         `${API_SERVER}/comment/create`,
-        { "fileId": `${fileId}`,
-          comment },
+        { fileId: `${fileId}`, comment },
         {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
     } catch (error) {
       alert("An error occurred while adding the comment.");
     }
-    fetchComments()
+    fetchComments();
   };
 
   const handleDeleteComment = async (id) => {
     try {
-      await axios.post(`${API_SERVER}/comment/delete/${id}`, {},
+      await axios.post(
+        `${API_SERVER}/comment/delete/${id}`,
+        {},
         {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       fetchComments();
     } catch (error) {
       alert("An error occurred while deleting the comment.");
@@ -86,7 +88,7 @@ function CommentModal({ show, onHide, fileId }) {
     try {
       await axios.post(
         `${API_SERVER}/comment/update`,
-        { "id": editingComment.id, comment },
+        { id: editingComment.id, comment },
         {
           headers: {
             "Content-Type": "application/json",
@@ -127,7 +129,7 @@ function CommentModal({ show, onHide, fileId }) {
           <tbody>
             {comments.map((comment) => (
               <tr key={comment.id}>
-                <td>{comment.username}</td>
+                <td>{comment.userName}</td>
                 <td>{comment.comment}</td>
                 <td>{new Date(comment.createdAt).toLocaleString()}</td>
                 <td>{comment.updated ? "Edited" : ""}</td>
@@ -162,11 +164,19 @@ function CommentModal({ show, onHide, fileId }) {
             className="comment-input"
           />
           {editingComment ? (
-            <Button id="updateCommentBtn" onClick={handleUpdateComment} variant="primary">
+            <Button
+              id="updateCommentBtn"
+              onClick={handleUpdateComment}
+              variant="primary"
+            >
               Update Comment
             </Button>
           ) : (
-            <Button id="addCommentBtn" onClick={handleComment} variant="primary">
+            <Button
+              id="addCommentBtn"
+              onClick={handleComment}
+              variant="primary"
+            >
               Add Comment
             </Button>
           )}

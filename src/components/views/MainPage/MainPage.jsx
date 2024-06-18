@@ -89,7 +89,14 @@ function MainPage() {
   function loadTeamFiles() {
     return async () => {
       try {
-        const res = await fetchTeamFiles(teamid);
+        const res = await fetchTeamFiles(
+          teamid,
+          curPage,
+          order,
+          sort,
+          searchQuery,
+          isRecycleBinPage()
+        );
         setFiles(res.content);
         setTotalPage(res.totalPages);
       } catch (err) {
