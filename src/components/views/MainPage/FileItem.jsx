@@ -112,7 +112,6 @@ const ItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  align-content: center;
   width: 20%;
   padding: 0 2% 0 2%;
   height: 298px;
