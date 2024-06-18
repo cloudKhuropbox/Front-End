@@ -75,11 +75,17 @@ export const createFile = async (file, idx) => {
         });
     });
     
+    const type = ((name) => {
+      var len = name.length
+      var dot = name.lastIndexOf('.')
+      return name.substring(dot+1, len)
+    })(file.name)
+
     const completeUpload = await client.post(`files/complete-upload?key=${file.name}&uploadId=${uploadId}`, {
       fileName: file.name,
       fileKey: file.name,
       fileSize: file.size,
-      fileType: file.type,
+      fileType: type,
       parts: [...fulfilledList]
     }, {
       headers: {
