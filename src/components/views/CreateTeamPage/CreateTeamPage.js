@@ -4,15 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "../../../config/apiConfig";
 import { useRecoilValue } from "recoil";
-import { userState, isLoggedInState } from "../../../recoil/userAtom";
+import { isLoggedInState } from "../../../recoil/userAtom";
 
 function CreateTeamPage() {
   const [teamName, setTeamName] = useState("");
   const [teamNameError, setTeamNameError] = useState("");
   const navigate = useNavigate();
-  const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
-
+  
   useEffect(() => {
     if (!isLoggedIn) {
       alert("먼저 로그인해주세요.");
@@ -36,7 +35,7 @@ function CreateTeamPage() {
       const response = await axios.post(`${API_SERVER}/teams/create`, req, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (response.status === 201) {

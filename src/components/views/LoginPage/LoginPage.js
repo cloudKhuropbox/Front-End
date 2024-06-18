@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "../../../config/apiConfig";
 import { useSetRecoilState } from "recoil";
-import { userState, isLoggedInState } from "../../../recoil/userAtom";
+import { isLoggedInState } from "../../../recoil/userAtom";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -14,7 +14,6 @@ function LoginPage() {
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const setUser = useSetRecoilState(userState);
   const setIsLoggedInState = useSetRecoilState(isLoggedInState);
 
   const handleSubmit = async (e) => {
@@ -45,8 +44,7 @@ function LoginPage() {
           localStorage.setItem("userId", id);
           localStorage.setItem("userName", username);
           localStorage.setItem("token", token);
-
-          setUser({ userId: id, userName: username, token: token });
+          
           setIsLoggedInState(true);
 
           navigate("/personal");

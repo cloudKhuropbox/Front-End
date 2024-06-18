@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import "./App.css";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import NavBar from "./views/NavBar/NavBar";
@@ -15,12 +15,12 @@ function App() {
   const isLoginPage = location.pathname === "/";
   const isSignupPage = location.pathname === "/signup";
   const isCreateTeamPage = location.pathname === "/create-team";
-  const isLogin = useRecoilValue(isLoggedInState)
+  const isLoggedIn = useRecoilValue(isLoggedInState);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div style={{ display: "flex", flex: 1 }}>
-        {isLogin && <NavBar />}
+        {!isLoginPage && !isSignupPage && !isCreateTeamPage && <NavBar />}
         <div
           style={{
             display: "flex",
@@ -29,23 +29,28 @@ function App() {
             height: "100vh",
           }}
         >
-          {isLogin && <Header />}
+          {!isLoginPage && !isSignupPage && !isCreateTeamPage && <Header />}
           <div style={{ flex: 1, padding: "20px 20px 20px" }}>
             <Routes>
-              {isLogin ?
-              <>
-                <Route path="/personal" element={<MainPage />} />
-                <Route path="/team/:teamid" element={<MainPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/create-team" element={<CreateTeamPage />} />
-                <Route path="*" element={<Navigate to={"/personal"}/>} />
-              </>
-              :
-              <>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="*" element={<Navigate to={"/"}/>} />      
-              </>
-              }
+              {isLoggedIn ? (
+                <>
+                  <Route path="/personal" element={<MainPage />} />
+                  <Route path="/team/:teamid" element={<MainPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
+                  <Route path="/create-team" element={<CreateTeamPage />} />
+                  <Route path="*" element={<Navigate to={"/personal"} />} />
+                  <Route path="/personal/recycle-bin" element={<MainPage />} />
+                  <Route
+                    path="/team/:teamid/recycle-bin"
+                    element={<MainPage />}
+                  />
+                </>
+              ) : (
+                <>
+                  <Route path="/" element={<LoginPage />} />
+                  <Route path="*" element={<Navigate to={"/"} />} />
+                </>
+              )}
             </Routes>
           </div>
         </div>

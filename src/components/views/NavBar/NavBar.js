@@ -1,32 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Nav } from "react-bootstrap";
-import { FaDropbox, FaCrown, FaUser } from "react-icons/fa";
+import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_SERVER } from "./../../../config/apiConfig";
 import { useRecoilValue } from "recoil";
-import { isLoggedInState, userState } from "../../../recoil/userAtom";
+import { isLoggedInState } from "../../../recoil/userAtom";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState("");
-  const user = useRecoilValue(userState);
   const isLoggedIn = useRecoilValue(isLoggedInState);
 
   useEffect(() => {
-
     if (isLoggedIn) {
       fetchTeams();
     }
   }, [isLoggedIn]);
 
   const fetchTeams = async () => {
-    const { token } = user;
+    const token = localStorage.getItem('token');
 
     try {
       const response = await axios.get(`${API_SERVER}/teams/list`, {
-
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

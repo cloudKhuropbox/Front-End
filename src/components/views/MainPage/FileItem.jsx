@@ -3,11 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components'
+import CommentModal from './CommentModal';
 import { checkedState } from '../../../recoil/atom';
 
 export default function FileItem({ file }) {
   const [checked, setChecked] = useRecoilState(checkedState);
   const [isCheck, setIsCheck] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   let icon;
   switch (file.fileType){
@@ -36,10 +38,14 @@ export default function FileItem({ file }) {
       setIsCheck(false)
   }, [checked])
 
+  const handleCloseComments = () => setShowComments(false);
+
   return (
     <ItemContainer onClick={(e) => {
       setChecked([file])
       setIsCheck(true)
+    }} onDoubleClick={(e) => {
+      setShowComments(true)
     }}>
       <Hover>
         
@@ -63,6 +69,11 @@ export default function FileItem({ file }) {
         </CheckBox>
         <Icon icon={icon} style={{color: "A1C9F7"}}></Icon>
       </IconWrap>
+      <CommentModal
+        show={showComments}
+        onHide={handleCloseComments}
+        fileId={file.id}>
+      </CommentModal>
       <InfoWrap>
         <Title>{file.fileName}</Title>
         <Info>
@@ -70,6 +81,8 @@ export default function FileItem({ file }) {
         </Info>
       </InfoWrap>
     </ItemContainer>
+  
+  
   )
 }
 
@@ -81,8 +94,8 @@ const Hover = styled.div`
 
 const CheckBox = styled.div`
   position: absolute;
-  left: 40px;
-  top: 15px;
+  left: 17%;
+  top: 5%;
 
   width: 20px;
   height: 20px;
@@ -101,6 +114,7 @@ const ItemContainer = styled.div`
   flex-wrap: wrap;
   align-content: center;
   width: 20%;
+  padding: 0 2% 0 2%;
   height: 298px;
   margin-bottom: 10px;
 
@@ -115,7 +129,7 @@ const IconWrap = styled.div`
   flex-wrap: wrap;
   z-index: 10;
 
-  width: 230px;
+  width: 100%;
   height: 230px;
   background-color: #F7F5F2;
 
