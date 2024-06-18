@@ -7,7 +7,7 @@ import Header from "./views/Header/Header";
 import LoginPage from "./views/LoginPage/LoginPage";
 import SignupPage from "./views/SignupPage/SignupPage";
 import CreateTeamPage from "./views/CreateTeamPage/CreateTeamPage";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { isLoggedInState } from "../recoil/userAtom";
 
 function App() {
@@ -15,11 +15,7 @@ function App() {
   const isLoginPage = location.pathname === "/";
   const isSignupPage = location.pathname === "/signup";
   const isCreateTeamPage = location.pathname === "/create-team";
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
-  
-  useEffect(() => {
-    setIsLoggedIn(false)
-  }, [])
+  const isLoggedIn = useRecoilValue(isLoggedInState);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

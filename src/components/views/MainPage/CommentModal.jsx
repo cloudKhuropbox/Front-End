@@ -10,9 +10,8 @@ function CommentModal({ show, onHide, fileId }) {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [editingComment, setEditingComment] = useState(null);
-  const [user] = useRecoilState(userState);
   
-  const token = user.token;
+  const token = localStorage.getItem('token');
 
   const fetchComments = useCallback(async () => {
     try {
