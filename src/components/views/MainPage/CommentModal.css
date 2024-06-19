@@ -1,0 +1,36 @@
+.comment-section {
+    margin-top: 20px;
+  }
+  
+  .comment-section h2 {
+    margin-bottom: 10px;
+  }
+  
+  .comment-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  #addCommentBtn, #updateCommentBtn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  #addCommentBtn:hover, #updateCommentBtn:hover {
+    background-color: #0056b3;
+  }
+  
+  .table th, .table td {
+    text-align: center;
+  }
+  
