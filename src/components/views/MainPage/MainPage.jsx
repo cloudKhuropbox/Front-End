@@ -113,7 +113,9 @@ function MainPage() {
 
   const uploadFile = (e) => {
     Array.from(e.target.files).forEach((file, idx) => {
-      createFile(file, idx);
+      createFile(file, idx).then(() => {
+        teamid ? (loadTeamFiles())() : (loadPersonalFiles())()
+      })
     });
   };
 
