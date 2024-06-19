@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const client = axios.create({
-  baseURL: "http://182.218.159.76:8080/",
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
 export const createFile = async (file, idx) => {

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { API_SERVER } from "./../../../config/apiConfig";
 import { Modal, Button } from "react-bootstrap";
 import { useRecoilState } from "recoil";
 import { userState } from "../../../recoil/userAtom";
 import "./CommentModal.css"; // Import the CSS file
+
+const API_SERVER = process.env.REACT_APP_API_URL;
 
 function CommentModal({ show, onHide, fileId }) {
   const [comments, setComments] = useState([]);

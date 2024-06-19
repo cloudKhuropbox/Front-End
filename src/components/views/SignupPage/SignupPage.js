@@ -3,7 +3,8 @@ import "./style.css";
 import { FaDropbox } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_SERVER } from "../../../config/apiConfig";
+
+const API_SERVER = process.env.REACT_APP_API_URL;
 
 function SignupPage() {
   const [username, setUsername] = useState("");

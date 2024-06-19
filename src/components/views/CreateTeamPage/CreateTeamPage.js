@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_SERVER } from "../../../config/apiConfig";
 import { useRecoilValue } from "recoil";
 import { isLoggedInState } from "../../../recoil/userAtom";
+
+const API_SERVER = process.env.REACT_APP_API_URL;
 
 function CreateTeamPage() {
   const [teamName, setTeamName] = useState("");

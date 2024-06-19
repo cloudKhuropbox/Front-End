@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { API_SERVER } from "./../../../config/apiConfig";
 import {
   Modal,
   Button,
@@ -12,6 +11,8 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./TeamMemberModal.css";
+
+const API_SERVER = process.env.REACT_APP_API_URL;
 
 function TeamMemberModal({ show, onHide, teamId }) {
   const [members, setMembers] = useState([]);

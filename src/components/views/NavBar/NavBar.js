@@ -3,9 +3,10 @@ import { Nav } from "react-bootstrap";
 import { FaDropbox } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { API_SERVER } from "./../../../config/apiConfig";
 import { useRecoilValue } from "recoil";
 import { isLoggedInState } from "../../../recoil/userAtom";
+
+const API_SERVER = process.env.REACT_APP_API_URL;
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(true);
