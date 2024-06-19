@@ -36,7 +36,6 @@ function App() {
                 <>
                   <Route path="/personal" element={<MainPage />} />
                   <Route path="/team/:teamid" element={<MainPage />} />
-                  <Route path="/signup" element={<SignupPage />} />
                   <Route path="/create-team" element={<CreateTeamPage />} />
                   <Route path="*" element={<Navigate to={"/personal"} />} />
                   <Route path="/personal/recycle-bin" element={<MainPage />} />
@@ -48,6 +47,7 @@ function App() {
               ) : (
                 <>
                   <Route path="/" element={<LoginPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
                   <Route path="*" element={<Navigate to={"/"} />} />
                 </>
               )}
