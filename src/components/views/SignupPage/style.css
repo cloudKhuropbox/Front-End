@@ -1,0 +1,30 @@
+.form_container {
+  width: 30%;
+}
+
+@media screen and (max-width: 1000px) {
+  .form_container {
+    width: 45%;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .form_container {
+    width: 65%;
+  }
+}
+
+.dropbox-icon-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px; /* Adjust margin-bottom as needed */
+}
+
+.dropbox-icon {
+  margin-right: 25px; /* Adjust margin-right as needed */
+}
+
+.logo-text {
+  font-size: 40px; /* Adjust font-size as needed */
+  font-weight: bolder; /* Make the text bold */
+}
