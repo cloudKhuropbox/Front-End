@@ -19,6 +19,7 @@ import {
   faTrashRestore,
   faUsers,
   faShareAlt,
+  faBrain,
 } from "@fortawesome/free-solid-svg-icons";
 import CopyToClipboard from "react-copy-to-clipboard";
 
@@ -225,7 +226,6 @@ function MainPage() {
             <FontAwesomeIcon icon={faUpload} /> 업로드
           </ActionBtn>
         )}
-
         <input
           style={{ display: "none" }}
           type="file"
@@ -240,6 +240,11 @@ function MainPage() {
         {checked.length === 1 && !isRecycleBinPage() && (
           <ActionBtn variant="outline-secondary" onClick={handleShowUpdate}>
             <FontAwesomeIcon icon={faEdit} /> 이름 변경
+          </ActionBtn>
+        )}
+        {checked.length === 1 && !isRecycleBinPage() && (checked[0].fileType === 'mp3') && (
+          <ActionBtn variant="outline-warning">
+            <FontAwesomeIcon icon={faBrain} /> 텍스트 변환
           </ActionBtn>
         )}
         {isRecycleBinPage() && (
